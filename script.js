@@ -150,6 +150,7 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
+    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -161,6 +162,7 @@ function checkMatch() {
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
 
+        // Show a pop-up message for a correct match
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
@@ -169,10 +171,12 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
-        selectedCards = [];
+        selectedCards = []; // Clear selected cards for the next round
 
+        // Check if all pairs have been matched
         const matchedCards = document.querySelectorAll('.matched');
         if (matchedCards.length === wordPairs.length * 2) {
+            // All cards matched, game over
             Swal.fire({
                 icon: 'success',
                 title: 'Congratulations!',
@@ -183,6 +187,7 @@ function checkMatch() {
             document.getElementById('reset-button').style.display = 'block';
         }
     } else {
+        // If not a match, flip the cards back only in "hard" mode
         setTimeout(() => {
             Swal.fire({
                 icon: 'error',
@@ -191,14 +196,17 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
-            firstCard.classList.remove('revealed');
-            firstCard.innerText = '[CARD]';
-            secondCard.classList.remove('revealed');
-            secondCard.innerText = '[CARD]';
+            if (gameMode === 'hard') {
+                // Flip the cards back to the original state in hard mode
+                firstCard.classList.remove('revealed');
+                firstCard.innerText = '[CARD]';
+                secondCard.classList.remove('revealed');
+                secondCard.innerText = '[CARD]';
+            }
+
             document.getElementById('message').innerText = 'Try again!';
-            
-            selectedCards = [];
-        }, 1000);
+            selectedCards = []; // Clear selected cards for the next attempt
+        }, 1000); // Delay to allow time for viewing the cards before they flip back
     }
 
     attempt += 1;
