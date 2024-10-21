@@ -198,12 +198,8 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Change the appearance of the cards for a non-match
+        // For easy mode, revert the cards back to their original state
         if (gameMode === 'easy') {
-            // Set a different style to indicate that the cards do not match
-            firstCard.style.backgroundColor = '#f2a5a5'; // Example color for non-match indication
-            secondCard.style.backgroundColor = '#f2a5a5';
-
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -213,10 +209,10 @@ function checkMatch() {
 
             document.getElementById('message').innerText = 'Try again!';
 
-            // Allow cards to be clicked again after a short delay
+            // Keep the original word visible on the cards
             setTimeout(() => {
-                firstCard.style.backgroundColor = ''; // Reset the background color
-                secondCard.style.backgroundColor = '';
+                firstCard.classList.remove('revealed');
+                secondCard.classList.remove('revealed');
             }, 1000); // Delay before resetting the appearance
         } else {
             // Hard mode behavior
