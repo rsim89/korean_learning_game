@@ -198,7 +198,28 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        if (gameMode === 'hard') {
+        // Change the appearance of the cards for a non-match
+        if (gameMode === 'easy') {
+            // Set a different style to indicate that the cards do not match
+            firstCard.style.backgroundColor = '#f2a5a5'; // Example color for non-match indication
+            secondCard.style.backgroundColor = '#f2a5a5';
+
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Try again. 😞',
+                confirmButtonText: 'OK'
+            });
+
+            document.getElementById('message').innerText = 'Try again!';
+
+            // Allow cards to be clicked again after a short delay
+            setTimeout(() => {
+                firstCard.style.backgroundColor = ''; // Reset the background color
+                secondCard.style.backgroundColor = '';
+            }, 1000); // Delay before resetting the appearance
+        } else {
+            // Hard mode behavior
             setTimeout(() => {
                 Swal.fire({
                     icon: 'error',
@@ -214,19 +235,11 @@ function checkMatch() {
 
                 document.getElementById('message').innerText = 'Try again!';
             }, 1000);
-        } else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Try again. 😞',
-                confirmButtonText: 'OK'
-            });
-
-            document.getElementById('message').innerText = 'Try again!';
         }
     }
 
-    selectedCards = []; // Clear selected cards for the next round
+    // Clear selected cards for the next round
+    selectedCards = [];
     attempt += 1;
 
     if (attempt >= maxAttempts && document.querySelectorAll('.matched').length < wordPairs.length * 2) {
