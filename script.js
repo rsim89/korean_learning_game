@@ -95,10 +95,11 @@ function createCards() {
     });
 
     if (gameMode === 'hard') {
-        isStudying = true; // Set the flag to true to prevent interaction
+        isStudying = true; // Prevent interaction during the study period
+        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
         setTimeout(() => {
             flipAllCardsBack();
-        }, 5000); // Delay of 5 seconds for students to study
+        }, studyDuration);
     }
 }
 
@@ -108,7 +109,7 @@ function flipAllCardsBack() {
         card.classList.remove('revealed');
         card.innerText = '[CARD]'; // Flip the card back to the original state
     });
-    isStudying = false; // Reset the flag after flipping the cards back
+    isStudying = false; // Allow interaction after flipping the cards back
 }
 
 function startGame() {
@@ -130,6 +131,12 @@ function startGame() {
     }
 
     loadWordPairsFromChapter(chapter);
+}
+
+function getStudyDuration() {
+    const durationInput = document.getElementById('study-duration').value;
+    const duration = parseInt(durationInput, 10);
+    return isNaN(duration) || duration <= 0 ? 15 : duration; // Default to 15 seconds if input is invalid
 }
 
 function selectCard(card) {
