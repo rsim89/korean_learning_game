@@ -60,10 +60,13 @@ function createCards() {
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
+    // Check if Easy Mode or Hard Mode is selected
+    const isEasyMode = document.getElementById('easy-mode').checked;
+
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = '[CARD]';
+        card.innerText = isEasyMode ? word : '[CARD]'; // Show the actual word in Easy Mode, hide it in Hard Mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -74,7 +77,7 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = '[CARD]';
+        card.innerText = isEasyMode ? word : '[CARD]'; // Show the actual word in Easy Mode, hide it in Hard Mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -98,7 +101,7 @@ function startGame() {
 
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
+    document.getElementById('refresh-button').style.display = 'none';
 
     if (!chapter) {
         alert('Please select a chapter.');
