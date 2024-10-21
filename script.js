@@ -169,6 +169,20 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
         selectedCards = []; // Clear selected cards for the next round
+
+        // Check if all pairs have been matched
+        const matchedCards = document.querySelectorAll('.matched');
+        if (matchedCards.length === wordPairs.length * 2) {
+            // All cards matched, game over
+            Swal.fire({
+                icon: 'success',
+                title: 'Congratulations!',
+                text: 'You have matched all the pairs!',
+                confirmButtonText: 'OK'
+            });
+            document.getElementById('message').innerText = 'You matched all pairs!';
+            document.getElementById('reset-button').style.display = 'block';
+        }
     } else {
         // If not a match, flip the cards back after a short delay
         setTimeout(() => {
@@ -192,11 +206,12 @@ function checkMatch() {
 
     attempt += 1;
 
-    if (attempt >= maxAttempts) {
+    if (attempt >= maxAttempts && document.querySelectorAll('.matched').length < wordPairs.length * 2) {
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
