@@ -6,6 +6,7 @@ let selectedCards = [];
 let displayKorean = [];
 let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
+let isStudying = false; // Flag to track if the study period is active
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -67,8 +68,8 @@ function createCards() {
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word in easy mode
+        card.className = 'card revealed'; // Initially revealed
+        card.innerText = word; // Show word initially
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -78,8 +79,8 @@ function createCards() {
 
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word in easy mode
+        card.className = 'card revealed'; // Initially revealed
+        card.innerText = word; // Show word initially
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -92,6 +93,22 @@ function createCards() {
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
+
+    if (gameMode === 'hard') {
+        isStudying = true; // Set the flag to true to prevent interaction
+        setTimeout(() => {
+            flipAllCardsBack();
+        }, 5000); // Delay of 5 seconds for students to study
+    }
+}
+
+function flipAllCardsBack() {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.classList.remove('revealed');
+        card.innerText = '[CARD]'; // Flip the card back to the original state
+    });
+    isStudying = false; // Reset the flag after flipping the cards back
 }
 
 function startGame() {
@@ -116,10 +133,10 @@ function startGame() {
 }
 
 function selectCard(card) {
+    if (isStudying) return; // Prevent selecting cards during the study period
     if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
         card.classList.add('revealed');
 
-        // In "Hard" mode, reveal the word when the card is selected
         if (gameMode === 'hard') {
             card.innerText = card.dataset.word;
         }
@@ -150,7 +167,6 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -162,7 +178,6 @@ function checkMatch() {
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
 
-        // Show a pop-up message for a correct match
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
@@ -171,25 +186,8 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
-        selectedCards = []; // Clear selected cards for the next round
-
-        // Check if all pairs have been matched
-        const matchedCards = document.querySelectorAll('.matched');
-        if (matchedCards.length === wordPairs.length * 2) {
-            // All cards matched, game over
-            Swal.fire({
-                icon: 'success',
-                title: 'Congratulations!',
-                text: 'You have matched all the pairs!',
-                confirmButtonText: 'OK'
-            });
-            document.getElementById('message').innerText = 'You matched all pairs!';
-            document.getElementById('reset-button').style.display = 'block';
-        }
     } else {
-        // In "easy" mode, keep cards revealed even if not a match
         if (gameMode === 'hard') {
-            // If not a match, flip the cards back after a short delay in hard mode
             setTimeout(() => {
                 Swal.fire({
                     icon: 'error',
@@ -198,17 +196,14 @@ function checkMatch() {
                     confirmButtonText: 'OK'
                 });
 
-                // Flip the cards back to the original state in hard mode
                 firstCard.classList.remove('revealed');
                 firstCard.innerText = '[CARD]';
                 secondCard.classList.remove('revealed');
                 secondCard.innerText = '[CARD]';
 
                 document.getElementById('message').innerText = 'Try again!';
-                selectedCards = []; // Clear selected cards for the next attempt
-            }, 1000); // Delay to allow time for viewing the cards before they flip back
+            }, 1000);
         } else {
-            // In "easy" mode, keep the cards revealed
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -217,10 +212,10 @@ function checkMatch() {
             });
 
             document.getElementById('message').innerText = 'Try again!';
-            selectedCards = []; // Clear selected cards for the next attempt
         }
     }
 
+    selectedCards = []; // Clear selected cards for the next round
     attempt += 1;
 
     if (attempt >= maxAttempts && document.querySelectorAll('.matched').length < wordPairs.length * 2) {
@@ -228,7 +223,6 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
-
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
