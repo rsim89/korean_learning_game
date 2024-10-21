@@ -158,7 +158,7 @@ function checkMatch() {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
-        
+
         // Show a pop-up message for a correct match
         Swal.fire({
             icon: 'success',
@@ -169,10 +169,7 @@ function checkMatch() {
 
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        // Play the "wrong" sound when the answer is incorrect
-        playSound('wrong.mp3');
-
-        // Use setTimeout to flip the cards back after a short delay, allowing time for the sound to play
+        // Flip the cards back to their original state after a short delay
         setTimeout(() => {
             Swal.fire({
                 icon: 'error',
@@ -187,7 +184,7 @@ function checkMatch() {
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
             document.getElementById('message').innerText = 'Try again!';
-        }, 1000); // Adjust the delay to match the duration of the "wrong.mp3" sound if needed
+        }, 1000); // Adjust the delay as needed
     }
     selectedCards = [];
     attempt += 1;
