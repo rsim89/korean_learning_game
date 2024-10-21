@@ -16,6 +16,8 @@ function shuffle(array) {
 function loadWordPairsFromChapter(chapter) {
     const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
 
+    console.log(`Loading word pairs from: ${filePath}`); // Debugging message
+
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
@@ -40,7 +42,7 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10);
+            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
             createCards();
         })
         .catch(error => {
@@ -78,12 +80,7 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-
-        // Ensure the soundFile includes the ".mp3" extension
-        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
-        if (!soundFile.endsWith('.mp3')) {
-            soundFile += '.mp3';
-        }
+        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
         card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
@@ -92,6 +89,9 @@ function createCards() {
 
 function startGame() {
     const chapter = document.getElementById('chapter').value;
+    const difficulty = document.getElementById('difficulty').value;
+    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
+
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -125,22 +125,8 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    // Check if the soundFile does not already end with ".mp3"
-    if (!soundFile.endsWith('.mp3')) {
-        soundFile += '.mp3'; // Add ".mp3" if it's missing
-    }
-
-    // Construct the full URL for the audio file
-    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${soundFile}`;
-
-    // Create a new Audio object with the file URL
-    const audio = new Audio(audioPath);
-
-    // Play the audio file
-    audio.play().catch(error => {
-        console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please make sure the file exists and is accessible.');
-    });
+    const audio = new Audio(`https://rsim89.github.io/korean_words/audiofiles/KORE121/${soundFile}`);
+    audio.play();
 }
 
 function checkMatch() {
@@ -155,8 +141,6 @@ function checkMatch() {
 
     if (match) {
         score += 10;
-        firstCard.classList.add('matched');
-        secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
     } else {
@@ -180,3 +164,6 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
+
+// Initialize the game
+startGame();
