@@ -68,8 +68,8 @@ function createCards() {
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show word initially
+        card.className = 'card';
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -79,8 +79,8 @@ function createCards() {
 
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show word initially
+        card.className = 'card';
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -95,10 +95,13 @@ function createCards() {
     });
 
     if (gameMode === 'hard') {
-        isStudying = true; // Set the flag to true to prevent interaction
+        isStudying = true; // Prevent interaction during the study period
+        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
         setTimeout(() => {
             flipAllCardsBack();
-        }, 5000); // Delay of 5 seconds for students to study
+        }, studyDuration);
+    } else {
+        isStudying = false; // Allow immediate interaction for easy mode
     }
 }
 
@@ -108,7 +111,7 @@ function flipAllCardsBack() {
         card.classList.remove('revealed');
         card.innerText = '[CARD]'; // Flip the card back to the original state
     });
-    isStudying = false; // Reset the flag after flipping the cards back
+    isStudying = false; // Allow interaction after flipping the cards back
 }
 
 function startGame() {
@@ -130,6 +133,12 @@ function startGame() {
     }
 
     loadWordPairsFromChapter(chapter);
+}
+
+function getStudyDuration() {
+    const durationInput = document.getElementById('study-duration').value;
+    const duration = parseInt(durationInput, 10);
+    return isNaN(duration) || duration <= 0 ? 15 : duration; // Default to 15 seconds if input is invalid
 }
 
 function selectCard(card) {
@@ -237,7 +246,6 @@ function showPracticeMode() {
     practiceList.style.display = 'block';
     document.querySelector('.game-board').style.display = 'none';
 
-    // List all word pairs for practice mode
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
