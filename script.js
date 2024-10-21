@@ -5,6 +5,7 @@ let maxAttempts = 12;
 let selectedCards = [];
 let displayKorean = [];
 let displayEnglish = [];
+let gameMode = 'hard'; // Default to hard mode
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -60,17 +61,13 @@ function createCards() {
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
-    // Check if Easy Mode or Hard Mode is selected
-    const isEasyMode = document.getElementById('easy-mode').checked;
-
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = word; // Always show the actual word in Easy Mode
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word in easy mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
-        card.dataset.flipped = isEasyMode ? 'true' : 'false'; // Mark as flipped in Easy Mode
         card.addEventListener('click', () => selectCard(card));
         englishContainer.appendChild(card);
     });
@@ -78,13 +75,11 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = word; // Always show the actual word in Easy Mode
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word in easy mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-        card.dataset.flipped = isEasyMode ? 'true' : 'false'; // Mark as flipped in Easy Mode
 
-        // Ensure the soundFile includes the ".mp3" extension
         let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
         if (!soundFile.endsWith('.mp3')) {
             soundFile += '.mp3';
@@ -97,13 +92,16 @@ function createCards() {
 
 function startGame() {
     const chapter = document.getElementById('chapter').value;
+    const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get selected mode
+
     score = 0;
     attempt = 0;
     selectedCards = [];
+    gameMode = selectedMode ? selectedMode.value : 'hard'; // Set the game mode, default to hard
 
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
-    document.getElementById('refresh-button').style.display = 'none';
+    document.getElementById('reset-button').style.display = 'none';
 
     if (!chapter) {
         alert('Please select a chapter.');
@@ -114,22 +112,23 @@ function startGame() {
 }
 
 function selectCard(card) {
-    // If the card is already flipped in Easy Mode, or if it's already revealed in Hard Mode, do nothing
-    if (card.dataset.flipped === 'true' || card.classList.contains('revealed')) {
-        return;
-    }
+    if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
+        card.classList.add('revealed');
 
-    card.classList.add('revealed');
-    card.dataset.flipped = 'true'; // Mark as flipped
+        // In "Hard" mode, reveal the word when the card is selected
+        if (gameMode === 'hard') {
+            card.innerText = card.dataset.word;
+        }
 
-    selectedCards.push(card);
+        selectedCards.push(card);
 
-    if (card.dataset.language === 'korean') {
-        playSound(card.dataset.soundFile);
-    }
+        if (card.dataset.language === 'korean') {
+            playSound(card.dataset.soundFile);
+        }
 
-    if (selectedCards.length === 2) {
-        setTimeout(checkMatch, 1000);
+        if (selectedCards.length === 2) {
+            setTimeout(checkMatch, 1000);
+        }
     }
 }
 
