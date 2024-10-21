@@ -14,9 +14,7 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
-
-    console.log(`Loading word pairs from: ${filePath}`); // Debugging message
+    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
 
     fetch(filePath)
         .then(response => {
@@ -42,7 +40,7 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
+            wordPairs = wordPairs.slice(0, 10);
             createCards();
         })
         .catch(error => {
@@ -80,7 +78,12 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+
+        // Ensure the soundFile includes the ".mp3" extension
+        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+        if (!soundFile.endsWith('.mp3')) {
+            soundFile += '.mp3';
+        }
         card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
@@ -89,9 +92,6 @@ function createCards() {
 
 function startGame() {
     const chapter = document.getElementById('chapter').value;
-    const difficulty = document.getElementById('difficulty').value;
-    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
-
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -125,15 +125,33 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audio = new Audio(`https://rsim89.github.io/korean_words/audiofiles/KORE121/${soundFile}`);
-    audio.play();
+    // Check if the soundFile does not already end with ".mp3"
+    if (!soundFile.endsWith('.mp3')) {
+        soundFile += '.mp3'; // Add ".mp3" if it's missing
+    }
+
+    // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
+    const audioPath = soundFile === 'wrong.mp3' 
+        ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
+        : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
+
+    // Create a new Audio object with the file URL
+    const audio = new Audio(audioPath);
+
+    // Play the audio file
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please make sure the file exists and is accessible.');
+    });
 }
+
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
+    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -141,18 +159,40 @@ function checkMatch() {
 
     if (match) {
         score += 10;
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
+        
+        // Show a pop-up message for a correct match
+        Swal.fire({
+            icon: 'success',
+            title: 'Correct!',
+            text: `You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`,
+            confirmButtonText: 'OK'
+        });
+
         document.getElementById('message').innerText = 'Correct!';
     } else {
-        document.getElementById('message').innerText = 'Try again!';
+        // Play the "wrong" sound when the answer is incorrect
+        playSound('wrong.mp3');
+
+        // Use setTimeout to flip the cards back after a short delay, allowing time for the sound to play
         setTimeout(() => {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Try again. 😞',
+                confirmButtonText: 'OK'
+            });
+
+            // Flip the cards back to their original state
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
-        }, 1000);
+            document.getElementById('message').innerText = 'Try again!';
+        }, 1000); // Adjust the delay to match the duration of the "wrong.mp3" sound if needed
     }
-
     selectedCards = [];
     attempt += 1;
 
@@ -164,6 +204,58 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
+document.getElementById('practice-button').addEventListener('click', showPracticeMode); // New Practice Button Event
 
-// Initialize the game
-startGame();
+function showPracticeMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = ''; // Clear any previous content
+    practiceList.style.display = 'block'; // Show the practice list
+    document.querySelector('.game-board').style.display = 'none'; // Hide the game board during practice
+
+    // Display the word pairs in the practice list
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
+        practiceItem.addEventListener('click', () => {
+            alert(`Selected Pair: ${pair.english} - ${pair.korean}`);
+        });
+        practiceList.appendChild(practiceItem);
+    });
+}
+
+function loadWordPairsFromChapter(chapter) {
+    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+
+    fetch(filePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            return response.arrayBuffer();
+        })
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+
+            wordPairs = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 3) {
+                    const korean = row[0];
+                    const english = row[1];
+                    const soundFile = row[2];
+                    wordPairs.push({ korean, english, soundFile });
+                }
+            }
+
+            shuffle(wordPairs);
+            wordPairs = wordPairs.slice(0, 10);
+            createCards();
+        })
+        .catch(error => {
+            console.error('Error loading the file:', error);
+            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
+        });
+}
