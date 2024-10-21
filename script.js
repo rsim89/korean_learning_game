@@ -42,8 +42,7 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10);
-            createCards();
+            createCards(); // Create cards with the selected word pairs
         })
         .catch(error => {
             console.error('Error loading the file:', error);
@@ -61,8 +60,11 @@ function createCards() {
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
 
-    displayKorean = wordPairs.map(pair => pair.korean);
-    displayEnglish = wordPairs.map(pair => pair.english);
+    // Limit to 10 pairs for the game
+    const gamePairs = wordPairs.slice(0, 10);
+    
+    displayKorean = gamePairs.map(pair => pair.korean);
+    displayEnglish = gamePairs.map(pair => pair.english);
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
@@ -85,7 +87,7 @@ function createCards() {
         card.dataset.language = 'korean';
         card.dataset.word = word;
 
-        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+        let soundFile = gamePairs.find(pair => pair.korean === word).soundFile;
         if (!soundFile.endsWith('.mp3')) {
             soundFile += '.mp3';
         }
@@ -246,6 +248,7 @@ function showPracticeMode() {
     practiceList.style.display = 'block';
     document.querySelector('.game-board').style.display = 'none';
 
+    // List all word pairs for practice mode
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
@@ -255,3 +258,4 @@ function showPracticeMode() {
         });
         practiceList.appendChild(practiceItem);
     });
+}
