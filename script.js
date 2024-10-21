@@ -125,23 +125,19 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    // Check if the soundFile does not already end with ".mp3"
+    // Ensure the soundFile ends with ".mp3"
     if (!soundFile.endsWith('.mp3')) {
-        soundFile += '.mp3'; // Add ".mp3" if it's missing
+        soundFile += '.mp3';
     }
 
-    // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
-    const audioPath = soundFile === 'wrong.mp3' 
-        ? `https://rsim89.github.io/korean_words/audiofiles/KORE121/${soundFile}` // Path for the "wrong.mp3" sound
-        : `https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile}`; // Path for other regular sound files
+    // Set the base URL for audio files
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile}`;
 
-    // Create a new Audio object with the file URL
+    // Create and play the audio
     const audio = new Audio(audioPath);
-
-    // Play the audio file
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please make sure the file exists and is accessible.');
+        alert('Could not play the audio. Please ensure the file exists and is accessible.');
     });
 }
 
