@@ -216,7 +216,8 @@ function checkMatch() {
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
 document.getElementById('practice-button').addEventListener('click', showPracticeMode); // New Practice Button Event
-
+document.getElementById('refresh-button').addEventListener('click', () => {location.reload(); // Refreshes the page
+                                                                         
 function showPracticeMode() {
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = ''; // Clear any previous content
