@@ -13,30 +13,40 @@ function shuffle(array) {
     }
 }
 
-function loadWordPairsFromFile(file) {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-        const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+function loadWordPairsFromChapter(chapter) {
+    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
 
-        wordPairs = [];
-        for (let i = 1; i < jsonData.length; i++) {
-            const row = jsonData[i];
-            if (row.length >= 3) {
-                const korean = row[0];
-                const english = row[1];
-                const soundFile = row[2]; // Sound file path from the "Sound" column
-                wordPairs.push({ korean, english, soundFile });
+    fetch(filePath)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
-        }
+            return response.arrayBuffer();
+        })
+        .then(data => {
+            const workbook = XLSX.read(data, { type: 'array' });
+            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
 
-        shuffle(wordPairs);
-        wordPairs = wordPairs.slice(0, 10); // Pick 10 random pairs
-        createCards();
-    };
-    reader.readAsArrayBuffer(file);
+            wordPairs = [];
+            for (let i = 1; i < jsonData.length; i++) {
+                const row = jsonData[i];
+                if (row.length >= 3) {
+                    const korean = row[0];
+                    const english = row[1];
+                    const soundFile = row[2];
+                    wordPairs.push({ korean, english, soundFile });
+                }
+            }
+
+            shuffle(wordPairs);
+            wordPairs = wordPairs.slice(0, 10);
+            createCards();
+        })
+        .catch(error => {
+            console.error('Error loading the file:', error);
+            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
+        });
 }
 
 function createCards() {
@@ -68,17 +78,20 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
-        const soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
-        card.dataset.soundFile = soundFile; // Store the sound file path
+
+        // Ensure the soundFile includes the ".mp3" extension
+        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
+        if (!soundFile.endsWith('.mp3')) {
+            soundFile += '.mp3';
+        }
+        card.dataset.soundFile = soundFile;
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
 }
 
 function startGame() {
-    const difficulty = document.getElementById('difficulty').value;
-    maxAttempts = difficulty === 'easy' ? 15 : difficulty === 'hard' ? 10 : 12;
-
+    const chapter = document.getElementById('chapter').value;
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -87,12 +100,12 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    if (wordPairs.length === 0) {
-        alert('Please upload a valid Excel file with word pairs.');
+    if (!chapter) {
+        alert('Please select a chapter.');
         return;
     }
 
-    createCards();
+    loadWordPairsFromChapter(chapter);
 }
 
 function selectCard(card) {
@@ -101,7 +114,6 @@ function selectCard(card) {
         card.innerText = card.dataset.word;
         selectedCards.push(card);
 
-        // Play sound if it's a Korean card
         if (card.dataset.language === 'korean') {
             playSound(card.dataset.soundFile);
         }
@@ -113,8 +125,22 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audio = new Audio(`https://rsim89.github.io/korean_word/audiofiles/${soundFile}`);
-    audio.play();
+    // Check if the soundFile does not already end with ".mp3"
+    if (!soundFile.endsWith('.mp3')) {
+        soundFile += '.mp3'; // Add ".mp3" if it's missing
+    }
+
+    // Construct the full URL for the audio file
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${soundFile}`;
+
+    // Create a new Audio object with the file URL
+    const audio = new Audio(audioPath);
+
+    // Play the audio file
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please make sure the file exists and is accessible.');
+    });
 }
 
 function checkMatch() {
@@ -122,7 +148,6 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -130,6 +155,8 @@ function checkMatch() {
 
     if (match) {
         score += 10;
+        firstCard.classList.add('matched');
+        secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
         document.getElementById('message').innerText = 'Correct!';
     } else {
@@ -153,12 +180,3 @@ function checkMatch() {
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('file-input').addEventListener('change', (event) => {
-    const file = event.target.files[0];
-    if (file) {
-        loadWordPairsFromFile(file);
-    }
-});
-
-// Initialize the game
-startGame();
