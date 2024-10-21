@@ -69,7 +69,7 @@ function createCards() {
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -80,7 +80,7 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -100,6 +100,8 @@ function createCards() {
         setTimeout(() => {
             flipAllCardsBack();
         }, studyDuration);
+    } else {
+        isStudying = false; // Allow immediate interaction for easy mode
     }
 }
 
