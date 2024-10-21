@@ -168,6 +168,9 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
+
+        // Allow players to keep playing by clearing the selected cards
+        selectedCards = [];
     } else {
         // Flip the cards back to their original state after a short delay
         setTimeout(() => {
@@ -184,9 +187,12 @@ function checkMatch() {
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
             document.getElementById('message').innerText = 'Try again!';
+
+            // Clear the selected cards for the next attempt
+            selectedCards = [];
         }, 1000); // Adjust the delay as needed
     }
-    selectedCards = [];
+
     attempt += 1;
 
     if (attempt >= maxAttempts) {
