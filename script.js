@@ -14,7 +14,7 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
 
     fetch(filePath)
         .then(response => {
@@ -132,8 +132,8 @@ function playSound(soundFile) {
 
     // Determine the full URL based on whether it's the "wrong.mp3" file or a regular sound file
     const audioPath = soundFile === 'wrong.mp3' 
-        ? `https://rsim89.github.io/korean_word/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
-        : `https://rsim89.github.io/korean_word/audiofiles/${soundFile}`; // Path for other regular sound files
+        ? `https://rsim89.github.io/korean_words/audiofiles/${soundFile}` // Path for the "wrong.mp3" sound
+        : `https://rsim89.github.io/korean_words/audiofiles/${soundFile}`; // Path for other regular sound files
 
     // Create a new Audio object with the file URL
     const audio = new Audio(audioPath);
@@ -225,7 +225,7 @@ function showPracticeMode() {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_word/vocab/${chapter}.xlsx`;
+    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
 
     fetch(filePath)
         .then(response => {
