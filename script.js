@@ -68,8 +68,8 @@ function createCards() {
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show word initially
+        card.className = 'card';
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -79,8 +79,8 @@ function createCards() {
 
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show word initially
+        card.className = 'card';
+        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
