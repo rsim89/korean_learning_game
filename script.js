@@ -68,8 +68,8 @@ function createCards() {
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
+        card.className = `card ${gameMode === 'easy' ? 'revealed easy-mode' : ''}`; // Add revealed class if easy mode
+        card.innerText = word; // Always show the word for easy mode, hide for hard mode with '[CARD]'
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -79,8 +79,8 @@ function createCards() {
 
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
+        card.className = `card ${gameMode === 'easy' ? 'revealed easy-mode' : ''}`; // Add revealed class if easy mode
+        card.innerText = word;
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -102,6 +102,29 @@ function createCards() {
         }, studyDuration);
     } else {
         isStudying = false; // Allow immediate interaction for easy mode
+    }
+}
+
+function selectCard(card) {
+    if (isStudying) return; // Prevent selecting cards during the study period
+    if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
+        card.classList.add('revealed');
+
+        if (gameMode === 'easy') {
+            card.classList.toggle('easy-mode'); // Toggle the color state for easy mode
+        } else {
+            card.innerText = card.dataset.word; // Reveal the word in hard mode
+        }
+
+        selectedCards.push(card);
+
+        if (card.dataset.language === 'korean') {
+            playSound(card.dataset.soundFile);
+        }
+
+        if (selectedCards.length === 2) {
+            setTimeout(checkMatch, 1000);
+        }
     }
 }
 
