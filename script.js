@@ -66,10 +66,11 @@ function createCards() {
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = isEasyMode ? word : '[CARD]'; // Show the actual word in Easy Mode, hide it in Hard Mode
+        card.innerText = word; // Always show the actual word in Easy Mode
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
+        card.dataset.flipped = isEasyMode ? 'true' : 'false'; // Mark as flipped in Easy Mode
         card.addEventListener('click', () => selectCard(card));
         englishContainer.appendChild(card);
     });
@@ -77,10 +78,11 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = isEasyMode ? word : '[CARD]'; // Show the actual word in Easy Mode, hide it in Hard Mode
+        card.innerText = word; // Always show the actual word in Easy Mode
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
+        card.dataset.flipped = isEasyMode ? 'true' : 'false'; // Mark as flipped in Easy Mode
 
         // Ensure the soundFile includes the ".mp3" extension
         let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
@@ -112,18 +114,22 @@ function startGame() {
 }
 
 function selectCard(card) {
-    if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
-        card.classList.add('revealed');
-        card.innerText = card.dataset.word;
-        selectedCards.push(card);
+    // If the card is already flipped in Easy Mode, or if it's already revealed in Hard Mode, do nothing
+    if (card.dataset.flipped === 'true' || card.classList.contains('revealed')) {
+        return;
+    }
 
-        if (card.dataset.language === 'korean') {
-            playSound(card.dataset.soundFile);
-        }
+    card.classList.add('revealed');
+    card.dataset.flipped = 'true'; // Mark as flipped
 
-        if (selectedCards.length === 2) {
-            setTimeout(checkMatch, 1000);
-        }
+    selectedCards.push(card);
+
+    if (card.dataset.language === 'korean') {
+        playSound(card.dataset.soundFile);
+    }
+
+    if (selectedCards.length === 2) {
+        setTimeout(checkMatch, 1000);
     }
 }
 
