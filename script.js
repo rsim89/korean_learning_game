@@ -70,8 +70,8 @@ function createCards() {
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
+        card.className = 'card revealed'; // Initially revealed
+        card.innerText = word; // Show the word initially
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -81,8 +81,8 @@ function createCards() {
 
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
-        card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word for easy mode, hide for hard mode
+        card.className = 'card revealed'; // Initially revealed
+        card.innerText = word; // Show the word initially
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -95,6 +95,26 @@ function createCards() {
         card.addEventListener('click', () => selectCard(card));
         koreanContainer.appendChild(card);
     });
+
+    if (gameMode === 'hard') {
+        isStudying = true; // Prevent interaction during the study period
+        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
+        setTimeout(() => {
+            flipAllCardsBack();
+        }, studyDuration);
+    } else {
+        isStudying = false; // Allow immediate interaction for easy mode
+    }
+}
+
+function flipAllCardsBack() {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.classList.remove('revealed');
+        card.innerText = '[CARD]'; // Flip the card back to the original state
+    });
+    isStudying = false; // Allow interaction after flipping the cards back
+}
 
     if (gameMode === 'hard') {
         isStudying = true; // Prevent interaction during the study period
