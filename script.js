@@ -53,6 +53,10 @@ function loadWordPairsFromChapter(chapter) {
 function createCards() {
     const englishContainer = document.getElementById('english-cards');
     const koreanContainer = document.getElementById('korean-cards');
+    if (!englishContainer || !koreanContainer) {
+        console.error('Card containers not found');
+        return;
+    }
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
 
@@ -133,15 +137,7 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    // Ensure the soundFile ends with ".mp3"
-    if (!soundFile.endsWith('.mp3')) {
-        soundFile += '.mp3';
-    }
-
-    // Set the base URL for audio files
     const audioPath = `https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile}`;
-
-    // Create and play the audio
     const audio = new Audio(audioPath);
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
@@ -149,13 +145,11 @@ function playSound(soundFile) {
     });
 }
 
-
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    // Check if the selected pair matches
     const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
@@ -167,7 +161,6 @@ function checkMatch() {
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
 
-        // Show a pop-up message for a correct match
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
@@ -176,12 +169,10 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
-        selectedCards = []; // Clear selected cards for the next round
+        selectedCards = [];
 
-        // Check if all pairs have been matched
         const matchedCards = document.querySelectorAll('.matched');
         if (matchedCards.length === wordPairs.length * 2) {
-            // All cards matched, game over
             Swal.fire({
                 icon: 'success',
                 title: 'Congratulations!',
@@ -192,7 +183,6 @@ function checkMatch() {
             document.getElementById('reset-button').style.display = 'block';
         }
     } else {
-        // If not a match, flip the cards back after a short delay
         setTimeout(() => {
             Swal.fire({
                 icon: 'error',
@@ -201,15 +191,14 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
-            // Flip the cards back to the original state
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
             document.getElementById('message').innerText = 'Try again!';
             
-            selectedCards = []; // Clear selected cards for the next attempt
-        }, 1000); // Delay to allow time for viewing the cards before they flip back
+            selectedCards = [];
+        }, 1000);
     }
 
     attempt += 1;
@@ -220,20 +209,19 @@ function checkMatch() {
     }
 }
 
-
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
-document.getElementById('practice-button').addEventListener('click', showPracticeMode); // New Practice Button Event
+document.getElementById('practice-button').addEventListener('click', showPracticeMode);
 document.getElementById('refresh-button').addEventListener('click', () => {
-        location.reload();
-                                                                         
+    location.reload();
+});
+
 function showPracticeMode() {
     const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = ''; // Clear any previous content
-    practiceList.style.display = 'block'; // Show the practice list
-    document.querySelector('.game-board').style.display = 'none'; // Hide the game board during practice
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
 
-    // Display the word pairs in the practice list
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
@@ -243,40 +231,4 @@ function showPracticeMode() {
         });
         practiceList.appendChild(practiceItem);
     });
-}
-
-function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
-
-    fetch(filePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.arrayBuffer();
-        })
-        .then(data => {
-            const workbook = XLSX.read(data, { type: 'array' });
-            const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-            const jsonData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
-
-            wordPairs = [];
-            for (let i = 1; i < jsonData.length; i++) {
-                const row = jsonData[i];
-                if (row.length >= 3) {
-                    const korean = row[0];
-                    const english = row[1];
-                    const soundFile = row[2];
-                    wordPairs.push({ korean, english, soundFile });
-                }
-            }
-
-            shuffle(wordPairs);
-            wordPairs = wordPairs.slice(0, 10);
-            createCards();
-        })
-        .catch(error => {
-            console.error('Error loading the file:', error);
-            alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
-        });
 }
