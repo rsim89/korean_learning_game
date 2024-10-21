@@ -42,7 +42,8 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            createCards(); // Create cards with the selected word pairs
+            wordPairs = wordPairs.slice(0, 10);
+            createCards();
         })
         .catch(error => {
             console.error('Error loading the file:', error);
@@ -60,18 +61,15 @@ function createCards() {
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
 
-    // Limit to 10 pairs for the game
-    const gamePairs = wordPairs.slice(0, 10);
-    
-    displayKorean = gamePairs.map(pair => pair.korean);
-    displayEnglish = gamePairs.map(pair => pair.english);
+    displayKorean = wordPairs.map(pair => pair.korean);
+    displayEnglish = wordPairs.map(pair => pair.english);
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show the word initially
+        card.innerText = word; // Show word initially
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -82,12 +80,12 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card revealed'; // Initially revealed
-        card.innerText = word; // Show the word initially
+        card.innerText = word; // Show word initially
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
 
-        let soundFile = gamePairs.find(pair => pair.korean === word).soundFile;
+        let soundFile = wordPairs.find(pair => pair.korean === word).soundFile;
         if (!soundFile.endsWith('.mp3')) {
             soundFile += '.mp3';
         }
@@ -97,13 +95,10 @@ function createCards() {
     });
 
     if (gameMode === 'hard') {
-        isStudying = true; // Prevent interaction during the study period
-        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
+        isStudying = true; // Set the flag to true to prevent interaction
         setTimeout(() => {
             flipAllCardsBack();
-        }, studyDuration);
-    } else {
-        isStudying = false; // Allow immediate interaction for easy mode
+        }, 5000); // Delay of 5 seconds for students to study
     }
 }
 
@@ -113,27 +108,7 @@ function flipAllCardsBack() {
         card.classList.remove('revealed');
         card.innerText = '[CARD]'; // Flip the card back to the original state
     });
-    isStudying = false; // Allow interaction after flipping the cards back
-}
-
-    if (gameMode === 'hard') {
-        isStudying = true; // Prevent interaction during the study period
-        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
-        setTimeout(() => {
-            flipAllCardsBack();
-        }, studyDuration);
-    } else {
-        isStudying = false; // Allow immediate interaction for easy mode
-    }
-}
-
-function flipAllCardsBack() {
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
-        card.classList.remove('revealed');
-        card.innerText = '[CARD]'; // Flip the card back to the original state
-    });
-    isStudying = false; // Allow interaction after flipping the cards back
+    isStudying = false; // Reset the flag after flipping the cards back
 }
 
 function startGame() {
@@ -155,12 +130,6 @@ function startGame() {
     }
 
     loadWordPairsFromChapter(chapter);
-}
-
-function getStudyDuration() {
-    const durationInput = document.getElementById('study-duration').value;
-    const duration = parseInt(durationInput, 10);
-    return isNaN(duration) || duration <= 0 ? 15 : duration; // Default to 15 seconds if input is invalid
 }
 
 function selectCard(card) {
