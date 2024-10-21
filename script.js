@@ -168,11 +168,9 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
-
-        // Allow players to keep playing by clearing the selected cards
-        selectedCards = [];
+        selectedCards = []; // Clear selected cards for the next round
     } else {
-        // Flip the cards back to their original state after a short delay
+        // If not a match, flip the cards back after a short delay
         setTimeout(() => {
             Swal.fire({
                 icon: 'error',
@@ -181,16 +179,15 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
-            // Flip the cards back to their original state
+            // Flip the cards back to the original state
             firstCard.classList.remove('revealed');
             firstCard.innerText = '[CARD]';
             secondCard.classList.remove('revealed');
             secondCard.innerText = '[CARD]';
             document.getElementById('message').innerText = 'Try again!';
-
-            // Clear the selected cards for the next attempt
-            selectedCards = [];
-        }, 1000); // Adjust the delay as needed
+            
+            selectedCards = []; // Clear selected cards for the next attempt
+        }, 1000); // Delay to allow time for viewing the cards before they flip back
     }
 
     attempt += 1;
