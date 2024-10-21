@@ -187,8 +187,28 @@ function checkMatch() {
             document.getElementById('reset-button').style.display = 'block';
         }
     } else {
-        // If not a match, flip the cards back only in "hard" mode
-        setTimeout(() => {
+        // In "easy" mode, keep cards revealed even if not a match
+        if (gameMode === 'hard') {
+            // If not a match, flip the cards back after a short delay in hard mode
+            setTimeout(() => {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Try again. 😞',
+                    confirmButtonText: 'OK'
+                });
+
+                // Flip the cards back to the original state in hard mode
+                firstCard.classList.remove('revealed');
+                firstCard.innerText = '[CARD]';
+                secondCard.classList.remove('revealed');
+                secondCard.innerText = '[CARD]';
+
+                document.getElementById('message').innerText = 'Try again!';
+                selectedCards = []; // Clear selected cards for the next attempt
+            }, 1000); // Delay to allow time for viewing the cards before they flip back
+        } else {
+            // In "easy" mode, keep the cards revealed
             Swal.fire({
                 icon: 'error',
                 title: 'Oops...',
@@ -196,17 +216,9 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
-            if (gameMode === 'hard') {
-                // Flip the cards back to the original state in hard mode
-                firstCard.classList.remove('revealed');
-                firstCard.innerText = '[CARD]';
-                secondCard.classList.remove('revealed');
-                secondCard.innerText = '[CARD]';
-            }
-
             document.getElementById('message').innerText = 'Try again!';
             selectedCards = []; // Clear selected cards for the next attempt
-        }, 1000); // Delay to allow time for viewing the cards before they flip back
+        }
     }
 
     attempt += 1;
@@ -216,6 +228,7 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
