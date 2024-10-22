@@ -269,8 +269,7 @@ function checkMatch() {
         }).then(() => {
             resetGame(); // Reset score, attempts, and restart the game
         });
-        document.getElementById('message').innerText = 'Congratulations!';
-        document.getElementById('reset-button').style.display = 'block';
+        document.getElementById('message').innerText = 'Congratulations!';        
     } else if (attempt >= maxAttempts) {
         // Game over condition if maximum attempts are reached
         Swal.fire({
@@ -282,7 +281,6 @@ function checkMatch() {
             resetGame(); // Reset score, attempts, and restart the game
         });
         document.getElementById('message').innerText = 'Game Over!';
-        document.getElementById('reset-button').style.display = 'block';
     }
 }
 
@@ -326,34 +324,6 @@ function startCountdown(duration) {
             countdownElement.style.display = 'none'; // Hide the countdown when time is up
         }
     }, 1000);
-}
-
-function startMatchingGame() {
-    const course = document.getElementById('course').value;
-    const chapter = document.getElementById('chapter').value;
-    const part = document.getElementById('part').value;
-    const selectedMode = document.querySelector('input[name="mode"]:checked');
-   
-    document.querySelector('.game-board').style.display = 'block';
-    gameMode = selectedMode.value;
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-    isStudying = false;
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    // Hide the countdown if not in hard mode
-    const countdownElement = document.getElementById('countdown-timer');
-    countdownElement.style.display = gameMode === 'hard' ? 'block' : 'none';
-
-    loadWordPairsFromChapter(course, chapter, part);
 }
 
 function startPracticeMode() {
@@ -425,7 +395,6 @@ document.getElementById('start-button').addEventListener('click', () => {
     // Update UI elements
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
 
     // Show the game board and hide the practice list
     document.querySelector('.game-board').style.display = 'block';
@@ -436,7 +405,6 @@ document.getElementById('start-button').addEventListener('click', () => {
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
 
-document.getElementById('reset-button').addEventListener('click', loadWordPairsFromChapter(course, chapter, part));
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
