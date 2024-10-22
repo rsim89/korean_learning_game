@@ -57,19 +57,16 @@
             </div>
 
             <div>
-                <img id="mute-button" src="images/unmute.svg" onclick="toggleMute()" 
-                     style="cursor: pointer; width: 30px; height: 30px;">
-            </div>
-
-            <div>
                 <label for="study-duration">Study Duration (seconds):</label>
                 <input type="number" id="study-duration" value="15" min="1">
             </div>
 
-            <div>
-                <button id="start-button">Start Game</button>
-                <button id="refresh-button">Reset</button>
+            <div id="controls">
+                <img id="start-button" src="images/start.svg" alt="Start Game" onclick="startMatchingGame()" style="cursor: pointer; width: 30px; height: 30px;">
+                <img id="refresh-button" src="images/reset.svg" alt="Reset Game" onclick="location.reload()" style="cursor: pointer; width: 30px; height: 30px;">
+                <img id="mute-button" src="images/unmute.svg" onclick="toggleMute()" style="cursor: pointer; width: 30px; height: 30px;">
             </div>
+            
         </div>
 
         <!-- Game Board -->
