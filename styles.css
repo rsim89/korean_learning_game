@@ -25,27 +25,18 @@ h1 {
 .game-board {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-    max-width: 900px;
-    margin: 0 auto;
+    margin-top: 20px;
 }
 
-.card-column {
-    width: 35%; /* Reduced width for narrower columns */
-    min-width: 200px; /* Adjust minimum width for better responsiveness */
+.cards {
+    width: 45%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.card-column h3 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
 .card {
-    width: 90%; /* Increased width to fill more space in narrower columns */
+    width: 80%;
     margin: 10px 0;
     background-color: #007bff;
     color: white;
@@ -100,14 +91,18 @@ h1 {
     background-color: #0056b3;
 }
 
+/* Center the practice list content on the screen */
 .practice-list {
-    margin-top: 20px;
-    font-size: 18px;
-    text-align: center;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center items vertically */
+    justify-content: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: auto; /* or set a specific width if necessary */
 }
 
 .practice-item {
@@ -117,27 +112,10 @@ h1 {
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    margin: 5px auto; /* Centering the item horizontally */
+    margin: 5px 0;
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
 .practice-item:hover {
     background-color: #e9e9e9;
-}
-
-/* Responsive Design for Smaller Screens */
-@media (max-width: 600px) {
-    .game-board {
-        flex-direction: column; /* Switches to column layout */
-        align-items: center;    /* Centers the columns */
-    }
-
-    .card-column {
-        width: 100%;           /* Makes each column full-width */
-        min-width: auto;
-    }
-
-    .card {
-        width: 90%;            /* Adjusts card width for smaller screens */
-    }
 }
