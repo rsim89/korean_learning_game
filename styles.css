@@ -121,3 +121,18 @@ h1 {
 .practice-item:hover {
     background-color: #e9e9e9;
 }
+
+#mute-button {
+    background-color: #4CAF50; /* Green background */
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding for size */
+    border: none; /* Remove border */
+    border-radius: 5px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Increase font size */
+    margin: 10px; /* Add some margin */
+}
+
+#mute-button:hover {
+    background-color: #45a049; /* Darker green on hover */
+}
