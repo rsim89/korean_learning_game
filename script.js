@@ -245,7 +245,9 @@ function startCountdown(duration) {
 
 
 function startMatchingGame() {
+    const course = document.getElementById('course').value;
     const chapter = document.getElementById('chapter').value;
+    const part = document.getElementById('part').value;
     const selectedMode = document.querySelector('input[name="mode"]:checked');
 
     if (!selectedMode || !['easy', 'hard'].includes(selectedMode.value)) {
@@ -310,7 +312,9 @@ function adjustLayoutForMode() {
 document.getElementById('start-button').addEventListener('click', () => {
     // Fetch the latest mode and chapter
     const selectedMode = document.querySelector('input[name="mode"]:checked');
+    const course = document.getElementById('course').value;
     const chapter = document.getElementById('chapter').value;
+    const part = document.getElementById('part').value;
 
     // Validate the selected mode
     if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
