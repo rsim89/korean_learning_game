@@ -19,7 +19,7 @@ function shuffle(array) {
 function toggleMute() {
     isMuted = !isMuted;
     const muteButton = document.getElementById('mute-button');
-    muteButton.innerText = isMuted ? 'Unmute Sound' : 'Mute Sound';
+    muteButton.src = isMuted ? 'images/mute.svg' : 'images/unmute.svg';
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
