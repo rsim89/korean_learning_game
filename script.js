@@ -120,9 +120,10 @@ function flipAllCardsBack() {
     isStudying = false; // Allow interaction after flipping the cards back
 }
 
+
 function startGame() {
     const chapter = document.getElementById('chapter').value;
-    const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get selected mode
+    const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get the selected mode
 
     // Check if the game mode has changed
     const newMode = selectedMode ? selectedMode.value : 'hard';
@@ -138,12 +139,18 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    // Hide the practice list and show the game board
+    // Hide the practice list and show the game board initially
     document.getElementById('practice-list').style.display = 'none';
     document.querySelector('.game-board').style.display = 'block';
 
     if (!chapter) {
         alert('Please select a chapter.');
+        return;
+    }
+
+    // If "Practice" mode is selected, directly show the practice section
+    if (gameMode === 'practice') {
+        showPracticeMode();
         return;
     }
 
@@ -303,7 +310,7 @@ function showPracticeMode() {
 
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
-    practiceList.style.display = 'block';
+    practiceList.style.display = 'block'; // Show the practice list
     document.querySelector('.game-board').style.display = 'none'; // Hide the game board
     document.getElementById('countdown-timer').style.display = 'none'; // Hide the countdown timer if in practice
 
@@ -311,7 +318,7 @@ function showPracticeMode() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> - <strong>${pair.korean}</strong>`;
         practiceItem.addEventListener('click', () => {
             playSound(pair.soundFile);
         });
