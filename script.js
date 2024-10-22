@@ -13,6 +13,11 @@ let countdownInterval; // Store the interval ID globally
 
 const BASE_URL = 'https://rsim89.github.io/korean_words/';
 
+function openGoogleImageSearch(query) {
+    const searchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`;
+    window.open(searchUrl, '_blank');
+}
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -147,6 +152,7 @@ function loadWordPairsFromChapter(course, chapter, part) {
         });
 }
 
+// Update createCards function to include the image search event listener
 function createCards() {
     const englishContainer = document.getElementById('english-cards');
     const koreanContainer = document.getElementById('korean-cards');
@@ -177,7 +183,10 @@ function createCards() {
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
-        card.addEventListener('click', () => selectCard(card));
+        card.addEventListener('click', () => {
+            selectCard(card);
+            openGoogleImageSearch(word); // Open Google Image search when the card is clicked
+        });
         englishContainer.appendChild(card);
     });
 
@@ -196,7 +205,10 @@ function createCards() {
             soundFile += '.mp3';
         }
         card.dataset.soundFile = soundFile;
-        card.addEventListener('click', () => selectCard(card));
+        card.addEventListener('click', () => {
+            selectCard(card);
+            openGoogleImageSearch(word); // Open Google Image search when the card is clicked
+        });
         koreanContainer.appendChild(card);
     });
 
@@ -217,7 +229,6 @@ function createCards() {
         }, studyDuration * 1000);
     }
 }
-
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
