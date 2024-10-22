@@ -310,7 +310,7 @@ function showPracticeMode() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
+        practiceItem.innerHTML = `<strong>${pair.english}</strong>  <strong>${pair.korean}</strong>`;
         practiceItem.addEventListener('click', () => {
             playSound(pair.soundFile);
         });
