@@ -104,6 +104,10 @@ function createCards() {
             flipAllCardsBack(); // Flip cards back after the study period
             isStudying = false; // Allow interaction after the study period
         }, studyDuration * 1000);
+    } else {
+        // Hide the countdown timer if not in hard mode
+        const countdownElement = document.getElementById('countdown-timer');
+        countdownElement.style.display = 'none';
     }
 }
 
