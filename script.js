@@ -13,6 +13,11 @@ let countdownInterval; // Store the interval ID globally
 
 const BASE_URL = 'https://rsim89.github.io/korean_words/';
 
+function googleImageSearch(query) {
+    const googleImageSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`;
+    window.open(googleImageSearchUrl, '_blank');
+}
+
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -137,8 +142,10 @@ function loadWordPairsFromChapter(course, chapter, part) {
             shuffle(wordPairs);
             if (gameMode === 'practice') {
                 startPracticeMode();
+            } else if (gameMode === 'picture') {
+                PracticePicture(); // Call the PracticePicture function for the picture game mode
             } else {
-                createCards(); // Create cards with the selected word pairs for game mode
+                createCards(); // Create cards with the selected word pairs for other game modes
             }
         })
         .catch(error => {
@@ -356,6 +363,39 @@ function startPracticeMode() {
     });
 }
 
+
+function PracticePicture() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
+
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+
+        // Display only the Korean word and make it clickable
+        practiceItem.innerHTML = `<strong style="cursor: pointer;">${pair.korean}</strong>`;
+
+        // Add click event to perform a Google Image search for the Korean word
+        practiceItem.addEventListener('click', () => {
+            googleImageSearch(pair.korean);
+        });
+
+        // Optionally, add a click event for playing the sound (if needed)
+        practiceItem.addEventListener('dblclick', () => {
+            playSound(course, chapter, pair.soundFile);
+        });
+
+        // Append the practice item to the list
+        practiceList.appendChild(practiceItem);
+    });
+}
+
+
 function adjustLayoutForMode() {
     const container = document.querySelector('.container');
     const gameBoard = document.querySelector('.game-board');
@@ -382,8 +422,8 @@ document.getElementById('start-button').addEventListener('click', () => {
     const part = document.getElementById('part').value;
 
     // Validate the selected mode
-    if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy, Hard, or Practice).');
+    if (!selectedMode || !['easy', 'hard', 'practice', 'picture'].includes(selectedMode.value)) {
+        alert('Please select a valid game mode (Easy, Hard, Practice, Picture).');
         return;
     }
 
