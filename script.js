@@ -160,15 +160,18 @@ function selectCard(card) {
             card.innerText = card.dataset.word;
         }
         selectedCards.push(card);
+
         if (card.dataset.language === 'korean') {
-            playSound(card.dataset.soundFile);
+            const course = document.getElementById('course').value;
+            const chapter = document.getElementById('chapter').value;
+            playSound(course, chapter, card.dataset.soundFile);
         }
+
         if (selectedCards.length === 2) {
             setTimeout(checkMatch, 1000);
         }
     }
 }
-
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
@@ -283,12 +286,15 @@ function startPracticeMode() {
     practiceList.style.display = 'block';
     document.querySelector('.game-board').style.display = 'none';
 
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
         practiceItem.innerHTML = `<strong>${pair.english}</strong> <strong>${pair.korean}</strong>`;
         practiceItem.addEventListener('click', () => {
-            playSound(pair.soundFile);
+            playSound(course, chapter, pair.soundFile);
         });
         practiceList.appendChild(practiceItem);
     });
