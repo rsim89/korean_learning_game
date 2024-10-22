@@ -19,16 +19,8 @@ function shuffle(array) {
 
 function toggleMute() {
     isMuted = !isMuted;
-    const unmuteIcon = document.getElementById('unmute-icon');
-    const muteIcon = document.getElementById('mute-icon');
-
-    if (isMuted) {
-        unmuteIcon.style.display = 'none';
-        muteIcon.style.display = 'block';
-    } else {
-        unmuteIcon.style.display = 'block';
-        muteIcon.style.display = 'none';
-    }
+    const muteButton = document.getElementById('mute-button');
+    muteButton.src = isMuted ? 'images/mute.svg' : 'images/unmute.svg';
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
