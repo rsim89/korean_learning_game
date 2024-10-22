@@ -287,6 +287,25 @@ function startPracticeMode() {
     });
 }
 
+
+function adjustLayoutForMode() {
+    const container = document.querySelector('.container');
+    const gameBoard = document.querySelector('.game-board');
+    const practiceList = document.getElementById('practice-list');
+
+    if (gameMode === 'practice') {
+        // Adjust layout for practice mode
+        container.style.minHeight = '600px'; // Increase the minimum height for practice mode
+        gameBoard.style.display = 'none'; // Hide the game board
+        practiceList.style.display = 'block'; // Show the practice list
+    } else {
+        // Adjust layout for game mode
+        container.style.minHeight = '400px'; // Set the minimum height for game mode
+        gameBoard.style.display = 'flex'; // Show the game board
+        practiceList.style.display = 'none'; // Hide the practice list
+    }
+}
+
 document.getElementById('start-button').addEventListener('click', () => {
     // Fetch the latest mode and chapter
     const selectedMode = document.querySelector('input[name="mode"]:checked');
@@ -329,7 +348,9 @@ document.getElementById('start-button').addEventListener('click', () => {
         // Reload word pairs if the chapter or mode changed, to ensure a fresh start
         loadWordPairsFromChapter(chapter);
     }
+    adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
+
 document.getElementById('reset-button').addEventListener('click', startMatchingGame);
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
