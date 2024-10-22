@@ -154,15 +154,25 @@ function loadWordPairsFromChapter(course, chapter, part) {
         });
 }
 
+
+
 function createCards() {
+    // Get the selected mode at the start of the function
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+    if (!selectedMode) {
+        console.error('No game mode selected');
+        return;
+    }
+    gameMode = selectedMode.value; // Set the gameMode to the selected mode
+
     const englishContainer = document.getElementById('english-cards');
     const koreanContainer = document.getElementById('korean-cards');
-    
+
     if (!englishContainer || !koreanContainer) {
         console.error('Card containers not found');
         return;
     }
-    
+
     // Clear any existing cards
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
@@ -209,15 +219,14 @@ function createCards() {
 
     // Clear any existing timeout to avoid overlap
     clearTimeout(flipTimeout);
-    
-    
+
     // If in Hard mode, start the study period before the game begins
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
-        
+
         startCountdown(studyDuration);
-        
+
         // Set a new timeout to flip the cards back after the study duration
         flipTimeout = setTimeout(() => {
             flipAllCardsBack();
@@ -225,7 +234,6 @@ function createCards() {
         }, studyDuration * 1000);
     }
 }
-
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
