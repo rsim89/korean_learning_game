@@ -15,7 +15,7 @@ function shuffle(array) {
     }
 }
 
-function loadWordPairsFromChapter(chapter) {
+function loadWordPairsFromChapter(course, chapter, part) {
     const filePath = `https://rsim89.github.io/korean_words/vocab/${course}_${chapter}_${part}.xlsx`;
 
     fetch(filePath)
@@ -270,7 +270,7 @@ function startMatchingGame() {
         return;
     }
 
-    loadWordPairsFromChapter(chapter);
+    loadWordPairsFromChapter(course, chapter, part);
 }
 
 function startPracticeMode() {
@@ -346,7 +346,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     document.querySelector('.game-board').style.display = 'block';
     document.getElementById('practice-list').style.display = 'none';
 
-    loadWordPairsFromChapter(chapter);
+    loadWordPairsFromChapter(course, chapter, part);
     
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
