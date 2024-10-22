@@ -27,7 +27,7 @@ h1 {
 .game-board {
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 50px;
 }
 
 .cards {
