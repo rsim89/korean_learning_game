@@ -7,12 +7,19 @@ let displayKorean = [];
 let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
+let isMuted = false;
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [array[i], array[j]] = [array[j], array[i]];
     }
+}
+
+function toggleMute() {
+    isMuted = !isMuted;
+    const muteButton = document.getElementById('mute-button');
+    muteButton.innerText = isMuted ? 'Unmute Sound' : 'Mute Sound';
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
@@ -153,6 +160,8 @@ function playSound(course, chapter, soundFile) {
 }
 
 function playFeedbackSound(isCorrect) {
+    if (isMuted) return; // Do not play sound if muted
+
     const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
     const audioPath = `https://rsim89.github.io/korean_words/audiofiles/feedback/${soundFile}`;
     const audio = new Audio(audioPath);
