@@ -48,6 +48,53 @@ function playFeedbackSound(isCorrect) {
     });
 }
 
+function selectCard(card) {
+    if (isStudying) return;
+    if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
+        card.classList.add('revealed');
+        if (gameMode === 'hard') {
+            card.innerText = card.dataset.word;
+        }
+        selectedCards.push(card);
+
+        if (card.dataset.language === 'korean') {
+            const course = document.getElementById('course').value;
+            const chapter = document.getElementById('chapter').value;
+            playSound(course, chapter, card.dataset.soundFile);
+        }
+
+        if (selectedCards.length === 2) {
+            setTimeout(checkMatch, 1000);
+        }
+    }
+}
+
+function flipAllCardsBack() {
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.classList.remove('revealed');
+        card.innerText = '[CARD]';
+    });
+    isStudying = false;
+}
+
+function getStudyDuration() {
+    const durationInput = document.getElementById('study-duration');
+    let duration = parseInt(durationInput.value, 10);
+
+    // Set to a default duration if the input is invalid or out of range
+    if (isNaN(duration) || duration < 1) {
+        duration = 10; // Default to 10 seconds
+    } else if (duration > 60) {
+        duration = 60;
+    }
+
+    // Reset the input field to the determined duration
+    durationInput.value = duration;
+    return duration;
+}
+
+
 function loadWordPairsFromChapter(course, chapter, part) {
     const filePath = `${BASE_URL}vocab/${course}_${chapter}_${part}.xlsx`;
 
@@ -155,53 +202,6 @@ function createCards() {
     }
 }
 
-function flipAllCardsBack() {
-    const allCards = document.querySelectorAll('.card');
-    allCards.forEach(card => {
-        card.classList.remove('revealed');
-        card.innerText = '[CARD]';
-    });
-    isStudying = false;
-}
-
-function getStudyDuration() {
-    const durationInput = document.getElementById('study-duration');
-    let duration = parseInt(durationInput.value, 10);
-
-    // Set to a default duration if the input is invalid or out of range
-    if (isNaN(duration) || duration < 1) {
-        duration = 10; // Default to 10 seconds
-    } else if (duration > 60) {
-        duration = 60;
-    }
-
-    // Reset the input field to the determined duration
-    durationInput.value = duration;
-    return duration;
-}
-
-
-
-function selectCard(card) {
-    if (isStudying) return;
-    if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
-        card.classList.add('revealed');
-        if (gameMode === 'hard') {
-            card.innerText = card.dataset.word;
-        }
-        selectedCards.push(card);
-
-        if (card.dataset.language === 'korean') {
-            const course = document.getElementById('course').value;
-            const chapter = document.getElementById('chapter').value;
-            playSound(course, chapter, card.dataset.soundFile);
-        }
-
-        if (selectedCards.length === 2) {
-            setTimeout(checkMatch, 1000);
-        }
-    }
-}
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
@@ -217,6 +217,7 @@ function checkMatch() {
         score += 10; // Increment score by 10 for each match
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
+        document.getElementById('score').style.display = 'block'; // Show the score
         document.getElementById('score').innerText = `Score: ${score}`;
 
         Swal.fire({
@@ -304,24 +305,17 @@ function resetGame() {
 function startCountdown(duration) {
     if (gameMode !== 'hard') return; // Only show the countdown for hard mode
 
-    let remainingTime = duration;
     const countdownElement = document.getElementById('countdown-timer');
+    countdownElement.style.display = 'block'; // Make sure the countdown is visible
 
-    // Reset and update the countdown display
-    countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
-    countdownElement.style.display = 'block';
+    clearInterval(countdownInterval); // Clear any previous interval
 
-    // Clear any existing countdown interval to avoid overlap
-    clearInterval(countdownInterval);
-
-    // Start a new countdown
     countdownInterval = setInterval(() => {
-        remainingTime -= 1;
-        countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
+        countdownElement.innerText = `You have ${duration--} seconds remaining.`;
 
-        if (remainingTime <= 0) {
+        if (duration < 0) {
             clearInterval(countdownInterval);
-            countdownElement.style.display = 'none'; // Hide the countdown when time is up
+            countdownElement.style.display = 'none'; // Hide the countdown when finished
         }
     }, 1000);
 }
