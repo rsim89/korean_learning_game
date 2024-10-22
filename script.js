@@ -101,7 +101,7 @@ function createCards() {
         isStudying = true; // Prevent interaction during the study period
         const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
         setTimeout(() => {
-            flipAllCardsBack();
+            flipAllCardsBack(); // Flip cards back after the study period
         }, studyDuration);
     }
 }
@@ -110,7 +110,7 @@ function flipAllCardsBack() {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
         card.classList.remove('revealed');
-        card.innerText = '[CARD]'; // Flip the card back to the original state
+        card.innerText = '[CARD]'; // Flip the card back to [CARD]
     });
     isStudying = false; // Allow interaction after flipping the cards back
 }
