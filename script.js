@@ -269,6 +269,18 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 });
 
 function showPracticeMode() {
+    const chapter = document.getElementById('chapter').value;
+
+    if (!chapter) {
+        alert('Please select a chapter.');
+        return;
+    }
+
+    if (wordPairs.length === 0) {
+        // Load word pairs if they haven't been loaded yet
+        loadWordPairsFromChapter(chapter);
+    }
+
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
     practiceList.style.display = 'block';
