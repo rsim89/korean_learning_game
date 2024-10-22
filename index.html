@@ -44,14 +44,7 @@
                 <input type="radio" name="mode" value="hard" id="hard-mode" checked> Hard
                 <input type="radio" name="mode" value="practice" id="practice-mode"> Practice
             </div>
-                <div id="mute-button" onclick="toggleMute()" style="cursor: pointer;">
-                    <svg id="unmute-icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
-                    <svg id="mute-icon" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display: none;">
-                        <line x1="1" y1="1" x2="23" y2="23"></line>
-                        <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                    </svg>
+                <img id="mute-button" src="images/unmute.svg" onclick="toggleMute()" style="cursor: pointer; width: 30px; height: 30px;">
                 </div>
             <div>
                 <label for="study-duration">Study Duration (seconds):</label>
