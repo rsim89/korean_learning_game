@@ -8,6 +8,7 @@ let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
 let isMuted = false;
+const BASE_URL = 'https://rsim89.github.io/korean_words/';
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -19,11 +20,11 @@ function shuffle(array) {
 function toggleMute() {
     isMuted = !isMuted;
     const muteButton = document.getElementById('mute-button');
-    muteButton.src = isMuted ? 'images/mute.svg' : 'images/unmute.svg';
+    muteButton.src = isMuted ? '${BASE_URL}images/mute.svg' : '${BASE_URL}images/unmute.svg';
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
-    const filePath = `https://rsim89.github.io/korean_words/vocab/${course}_${chapter}_${part}.xlsx`;
+    const filePath = `${BASE_URL}vocab/${course}_${chapter}_${part}.xlsx`;
 
     fetch(filePath)
         .then(response => {
@@ -150,7 +151,7 @@ function getStudyDuration() {
 }
 
 function playSound(course, chapter, soundFile) {
-    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${course}/${chapter}/${soundFile}`;
+    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
     const audio = new Audio(audioPath);
 
     audio.play().catch(error => {
@@ -163,7 +164,7 @@ function playFeedbackSound(isCorrect) {
     if (isMuted) return; // Do not play sound if muted
 
     const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
-    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/feedback/${soundFile}`;
+    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
     const audio = new Audio(audioPath);
 
     audio.play().catch(error => {
