@@ -125,4 +125,19 @@ h1 {
     background-color: #e9e9e9;
 }
 
-/* Responsive Design for Smal
+/* Responsive Design for Smaller Screens */
+@media (max-width: 600px) {
+    .game-board {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .card-column {
+        width: 100%;
+        min-width: auto;
+    }
+
+    .card {
+        width: 90%;
+    }
+}
