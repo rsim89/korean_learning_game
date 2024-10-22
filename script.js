@@ -94,6 +94,12 @@ function getStudyDuration() {
     return duration;
 }
 
+function resetCountdown() {
+    clearInterval(countdownInterval); // Clear any existing countdown
+    const countdownElement = document.getElementById('countdown-timer');
+    countdownElement.innerText = ''; // Clear the text
+    countdownElement.style.display = 'none'; // Hide the countdown
+}
 
 function loadWordPairsFromChapter(course, chapter, part) {
     const filePath = `${BASE_URL}vocab/${course}_${chapter}_${part}.xlsx`;
@@ -376,7 +382,7 @@ document.getElementById('start-button').addEventListener('click', () => {
         alert('Please select a chapter.');
         return;
     }
-
+    
     // Update the gameMode with the selected mode value
     gameMode = selectedMode.value;
 
@@ -385,7 +391,10 @@ document.getElementById('start-button').addEventListener('click', () => {
     attempt = 0;
     selectedCards = [];
     isStudying = false; // Reset study flag
-
+    
+    // Reset the countdown
+    resetCountdown();
+    
     // Update UI elements
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
