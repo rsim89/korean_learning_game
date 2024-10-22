@@ -206,13 +206,13 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    const match = gamePairs.some(pair =>
+    const match = wordPairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
     );
 
     if (match) {
-        score += 10;
+        score += 10; // Increment score by 10 for each match
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
         document.getElementById('score').innerText = `Score: ${score}`;
@@ -257,27 +257,26 @@ function checkMatch() {
     selectedCards = [];
     attempt += 1;
 
-    // Check if all pairs are matched
-    const totalMatchedCards = document.querySelectorAll('.matched').length;
-    const totalCards = gamePairs.length * 2;
-    if (totalMatchedCards === totalCards) {
-        // All pairs matched successfully
+    // Check if score has reached 100
+    if (score >= 100) {
+        // Show congratulatory message when score reaches 100
         Swal.fire({
             icon: 'success',
-            title: 'Perfect!',
-            text: 'You matched all pairs correctly! 🎉',
+            title: 'Congratulations!',
+            text: 'You scored 100 points! 🎉',
             confirmButtonText: 'Restart'
         }).then(() => {
             startMatchingGame(); // Restart the game when the user clicks "Restart"
         });
-        document.getElementById('message').innerText = 'Perfect!';
+        document.getElementById('message').innerText = 'Congratulations!';
         document.getElementById('reset-button').style.display = 'block';
     } else if (attempt >= maxAttempts) {
-        // Game over condition if maximum attempts reached without matching all pairs
+        // Game over condition if maximum attempts reached without reaching 100
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
 }
+
 
 function startCountdown(duration) {
     if (gameMode !== 'hard') return; // Only show the countdown for hard mode
