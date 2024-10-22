@@ -142,6 +142,16 @@ function getStudyDuration() {
     return duration;
 }
 
+function playSound(course, chapter, soundFile) {
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${course}/${chapter}/${soundFile}`;
+    const audio = new Audio(audioPath);
+
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please ensure the file exists and is accessible.');
+    });
+}
+
 function selectCard(card) {
     if (isStudying) return;
     if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
@@ -159,13 +169,6 @@ function selectCard(card) {
     }
 }
 
-function playSound(soundFile) {
-    const audio = new Audio(soundFile);
-    audio.play().catch(error => {
-        console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please ensure the file exists and is accessible.');
-    });
-}
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
