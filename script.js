@@ -128,32 +128,6 @@ function flipAllCardsBack() {
     isStudying = false;
 }
 
-function startMatchingGame() {
-    const chapter = document.getElementById('chapter').value;
-    const selectedMode = document.querySelector('input[name="mode"]:checked');
-
-    if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy, Hard, or Practice).');
-        return;
-    }
-
-    gameMode = selectedMode.value;
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-    isStudying = false;
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    loadWordPairsFromChapter(chapter);
-}
-
 function getStudyDuration() {
     const durationInput = document.getElementById('study-duration').value;
     let duration = parseInt(durationInput, 10);
@@ -316,6 +290,32 @@ document.getElementById('reset-button').addEventListener('click', startMatchingG
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
+
+function startMatchingGame() {
+    const chapter = document.getElementById('chapter').value;
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+
+    if (!selectedMode || !['easy', 'hard'].includes(selectedMode.value)) {
+        alert('Please select a valid game mode (Easy or Hard).');
+        return;
+    }
+
+    gameMode = selectedMode.value;
+    score = 0;
+    attempt = 0;
+    selectedCards = [];
+    isStudying = false;
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+    document.getElementById('reset-button').style.display = 'none';
+
+    if (!chapter) {
+        alert('Please select a chapter.');
+        return;
+    }
+
+    loadWordPairsFromChapter(chapter);
+}
 
 function startPracticeMode() {
     const practiceList = document.getElementById('practice-list');
