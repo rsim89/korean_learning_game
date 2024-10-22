@@ -1,7 +1,7 @@
 let wordPairs = [];
 let score = 0;
 let attempt = 0;
-let maxAttempts = 12;
+let maxAttempts = 15;
 let selectedCards = [];
 let displayKorean = [];
 let displayEnglish = [];
@@ -23,6 +23,29 @@ function toggleMute() {
     isMuted = !isMuted;
     const muteButton = document.getElementById('mute-button');
     muteButton.src = isMuted ? 'images/mute.svg' : 'images/unmute.svg';
+}
+
+function playSound(course, chapter, soundFile) {
+    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
+    const audio = new Audio(audioPath);
+    
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please ensure the file exists and is accessible.');
+    });
+}
+
+function playFeedbackSound(isCorrect) {
+    if (isMuted) return; // Do not play sound if muted
+
+    const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
+    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
+    const audio = new Audio(audioPath);
+
+    audio.play().catch(error => {
+        console.error('Error playing the feedback audio file:', error);
+        alert('Could not play the feedback audio. Please ensure the file exists and is accessible.');
+    });
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
@@ -157,28 +180,7 @@ function getStudyDuration() {
     return duration;
 }
 
-function playSound(course, chapter, soundFile) {
-    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
-    const audio = new Audio(audioPath);
 
-    audio.play().catch(error => {
-        console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please ensure the file exists and is accessible.');
-    });
-}
-
-function playFeedbackSound(isCorrect) {
-    if (isMuted) return; // Do not play sound if muted
-
-    const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
-    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
-    const audio = new Audio(audioPath);
-
-    audio.play().catch(error => {
-        console.error('Error playing the feedback audio file:', error);
-        alert('Could not play the feedback audio. Please ensure the file exists and is accessible.');
-    });
-}
 
 function selectCard(card) {
     if (isStudying) return;
@@ -256,26 +258,42 @@ function checkMatch() {
 
     selectedCards = [];
     attempt += 1;
-      
+
     // Check if score has reached 100
     if (score >= 100) {
-        // Show congratulatory message when score reaches 100
         Swal.fire({
             icon: 'success',
             title: 'Congratulations!',
             text: 'You scored 100 points! 🎉',
             confirmButtonText: 'Restart'
         }).then(() => {
-            createCards(); //
-            adjustLayoutForMode(); // Adjust the layout based on the selected mode
+            resetGame(); // Reset score, attempts, and restart the game
         });
         document.getElementById('message').innerText = 'Congratulations!';
         document.getElementById('reset-button').style.display = 'block';
     } else if (attempt >= maxAttempts) {
-        // Game over condition if maximum attempts reached without reaching 100
+        // Game over condition if maximum attempts are reached
+        Swal.fire({
+            icon: 'warning',
+            title: 'Game Over!',
+            text: `You've reached the maximum attempts of ${maxAttempts}.`,
+            confirmButtonText: 'Restart'
+        }).then(() => {
+            resetGame(); // Reset score, attempts, and restart the game
+        });
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
+}
+
+// Function to reset the game state
+function resetGame() {
+    score = 0;
+    attempt = 0;
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+    loadWordPairsFromChapter(course, chapter, part); // Recreate the game cards
+    adjustLayoutForMode(); // Adjust the layout based on the selected mode
 }
 
 
@@ -412,7 +430,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
 
-document.getElementById('reset-button').addEventListener('click', startMatchingGame);
+document.getElementById('reset-button').addEventListener('click', loadWordPairsFromChapter(course, chapter, part));
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
