@@ -4,7 +4,6 @@ body {
     text-align: center;
 }
 
-
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -25,31 +24,31 @@ h1 {
 
 .game-board {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: flex-start;
-    padding: 20px;
 }
 
-.card-column {
+.cards {
     width: 45%;
     display: flex;
     flex-direction: column;
     align-items: center;
 }
 
-.card-column h3 {
-    text-align: center;
-    margin-bottom: 10px;
-}
-
 .card {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    text-align: center;
-    border: 1px solid #ccc;
+    width: 80%;
+    margin: 10px 0;
+    background-color: #007bff;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 18px;
     cursor: pointer;
-    background-color: #f9f9f9;
+    border-radius: 8px;
+    height: 50px;
+    transition: background-color 0.3s, transform 0.3s;
+    transform-style: preserve-3d;
 }
 
 .card:hover {
