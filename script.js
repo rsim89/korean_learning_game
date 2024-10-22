@@ -71,7 +71,7 @@ function createCards() {
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
+        card.innerText = word; // Show the actual word initially
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -82,7 +82,7 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = gameMode === 'easy' ? word : '[CARD]'; // Show word initially for easy mode
+        card.innerText = word; // Show the actual word initially
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -96,8 +96,9 @@ function createCards() {
         koreanContainer.appendChild(card);
     });
 
-    if (gameMode === 'hard' || gameMode === 'easy') {
-        isStudying = true; // Prevent interaction during the study period for both modes
+    // Flip the cards back to [CARD] after the study duration
+    if (gameMode === 'hard') {
+        isStudying = true; // Prevent interaction during the study period
         const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
         setTimeout(() => {
             flipAllCardsBack();
