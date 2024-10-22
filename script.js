@@ -257,15 +257,17 @@ function checkMatch() {
 }
 
 function startCountdown(duration) {
+    if (gameMode !== 'hard') return; // Only proceed if the game mode is "hard"
+
     let remainingTime = duration;
     const countdownElement = document.getElementById('countdown-timer');
 
-    countdownElement.innerText = `Time left: ${remainingTime} sec`;
+    countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
     countdownElement.style.display = 'block';
 
     const countdownInterval = setInterval(() => {
         remainingTime -= 1;
-        countdownElement.innerText = `Time left: ${remainingTime} sec`;
+        countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
 
         if (remainingTime <= 0) {
             clearInterval(countdownInterval);
