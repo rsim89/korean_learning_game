@@ -378,11 +378,37 @@ function PracticePicture() {
         practiceItem.className = 'practice-item';
 
         // Display the Korean word
-        practiceItem.innerHTML = `<strong style="cursor: pointer; margin-right: 10px;">${pair.korean}</strong>`;
+        practiceItem.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
+
+        // Create an input field for typing the English word
+        const inputField = document.createElement('input');
+        inputField.type = 'text';
+        inputField.placeholder = 'Type English word';
+        inputField.style.marginLeft = '10px';
+        
+        // Create a button to check the answer
+        const checkButton = document.createElement('button');
+        checkButton.innerText = 'Check';
+        checkButton.style.marginLeft = '5px';
+
+        // Create a span to show feedback
+        const feedback = document.createElement('span');
+        feedback.style.marginLeft = '10px';
+
+        // Add click event to the check button to verify the answer
+        checkButton.addEventListener('click', () => {
+            if (inputField.value.trim().toLowerCase() === pair.english.toLowerCase()) {
+                feedback.innerText = 'Correct!';
+                feedback.style.color = 'green';
+            } else {
+                feedback.innerText = `Incorrect. The correct answer is "${pair.english}".`;
+                feedback.style.color = 'red';
+            }
+        });
+
         // Create an SVG icon for the Google Image search
         const searchIcon = document.createElement('img');
-        searchIcon.src = `${BASE_URL}images/search-icon.svg'`; // Make sure you have this SVG file in the correct path
-        searchIcon.alt = 'Search Image';
+        searchIcon.src = '${BASE_URL}images/search.svg'; // Make sure you have this SVG file in the correct path
         searchIcon.style.cursor = 'pointer';
         searchIcon.style.width = '20px';
         searchIcon.style.height = '20px';
@@ -390,7 +416,7 @@ function PracticePicture() {
 
         // Add click event to the SVG icon to perform a Google Image search
         searchIcon.addEventListener('click', () => {
-            PracticePicture(pair.korean);
+            googleImageSearch(pair.korean);
         });
 
         // Add click event for playing the sound when clicking the word
@@ -398,7 +424,10 @@ function PracticePicture() {
             playSound(course, chapter, pair.soundFile);
         });
 
-        // Append the SVG icon to the practice item
+        // Append all elements to the practice item
+        practiceItem.appendChild(inputField);
+        practiceItem.appendChild(checkButton);
+        practiceItem.appendChild(feedback);
         practiceItem.appendChild(searchIcon);
 
         // Append the practice item to the list
