@@ -128,16 +128,16 @@ h1 {
 /* Responsive Design for Smaller Screens */
 @media (max-width: 600px) {
     .game-board {
-        flex-direction: column;
-        align-items: center;
+        flex-direction: column; /* Switches to column layout */
+        align-items: center;    /* Centers the columns */
     }
 
     .card-column {
-        width: 100%;
+        width: 100%;           /* Makes each column full-width */
         min-width: auto;
     }
 
     .card {
-        width: 90%;
+        width: 90%;            /* Adjusts card width for smaller screens */
     }
 }
