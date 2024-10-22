@@ -243,6 +243,50 @@ function startCountdown(duration) {
     }, 1000);
 }
 
+
+function startMatchingGame() {
+    const chapter = document.getElementById('chapter').value;
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
+
+    if (!selectedMode || !['easy', 'hard'].includes(selectedMode.value)) {
+        alert('Please select a valid game mode (Easy or Hard).');
+        return;
+    }
+
+    gameMode = selectedMode.value;
+    score = 0;
+    attempt = 0;
+    selectedCards = [];
+    isStudying = false;
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+    document.getElementById('reset-button').style.display = 'none';
+
+    if (!chapter) {
+        alert('Please select a chapter.');
+        return;
+    }
+
+    loadWordPairsFromChapter(chapter);
+}
+
+function startPracticeMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
+
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> <strong>${pair.korean}</strong>`;
+        practiceItem.addEventListener('click', () => {
+            playSound(pair.soundFile);
+        });
+        practiceList.appendChild(practiceItem);
+    });
+}
+
 document.getElementById('start-button').addEventListener('click', () => {
     // Fetch the latest mode and chapter
     const selectedMode = document.querySelector('input[name="mode"]:checked');
@@ -290,55 +334,3 @@ document.getElementById('reset-button').addEventListener('click', startMatchingG
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
-
-function startMatchingGame() {
-    const chapter = document.getElementById('chapter').value;
-    const selectedMode = document.querySelector('input[name="mode"]:checked');
-
-    if (!selectedMode || !['easy', 'hard'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy or Hard).');
-        return;
-    }
-
-    gameMode = selectedMode.value;
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-    isStudying = false;
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    loadWordPairsFromChapter(chapter);
-}
-
-function startPracticeMode() {
-    const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = ''; // Clear existing items
-    practiceList.style.display = 'block'; // Show practice list
-    document.querySelector('.game-board').style.display = 'none'; // Hide game board
-
-    wordPairs.forEach(pair => {
-        // Clone the template
-        const practiceItemTemplate = document.querySelector('.practice-item-template');
-        const practiceItem = practiceItemTemplate.cloneNode(true);
-        practiceItem.style.display = 'block'; // Make the cloned item visible
-
-        // Set the English and Korean words
-        practiceItem.querySelector('.english-word').innerText = pair.english;
-        practiceItem.querySelector('.korean-word').innerText = pair.korean;
-
-        // Add click event to play sound
-        practiceItem.addEventListener('click', () => {
-            playSound(pair.soundFile);
-        });
-
-        // Append the new item to the practice list
-        practiceList.appendChild(practiceItem);
-    });
-}
