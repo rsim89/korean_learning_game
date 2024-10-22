@@ -7,6 +7,8 @@ let displayKorean = [];
 let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
+let isInPracticeMode = false; // New flag to track if currently in practice mode
+
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -136,11 +138,13 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    // Hide practice mode elements regardless of the current state
+    // Hide practice mode elements
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
-    practiceList.style.display = 'none'; // Ensure the practice list is hidden
-    document.querySelector('.game-board').style.display = 'block'; // Ensure the game board is shown
+    practiceList.style.display = 'none'; // Hide the practice list
+    document.querySelector('.game-board').style.display = 'block'; // Show the game board
+
+    isInPracticeMode = false; // Reset the flag since we're now starting a regular game
 
     if (!chapter) {
         alert('Please select a chapter.');
@@ -150,19 +154,18 @@ function startGame() {
     // If "practice" mode is selected, switch to practice mode
     if (gameMode === 'practice') {
         showPracticeMode();
+        isInPracticeMode = true; // Set the flag for practice mode
         return;
     }
 
     // For "easy" or "hard" mode, set up the game board
-    if (modeChanged || wordPairs.length === 0 || practiceList.style.display === 'block') {
+    if (modeChanged || wordPairs.length === 0 || isInPracticeMode) {
         loadWordPairsFromChapter(chapter);
     } else {
         // If the mode hasn't changed and we're not coming from practice mode, just reset the game board
         createCards(); // Recreate the cards without reloading the chapter
     }
 }
-
-
 
 
 function getStudyDuration() {
@@ -309,6 +312,7 @@ function showPracticeMode() {
         loadWordPairsFromChapter(chapter);
     }
 
+    isInPracticeMode = true; // Set the flag for practice mode
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
     practiceList.style.display = 'block';
