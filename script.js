@@ -7,8 +7,6 @@ let displayKorean = [];
 let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
-let isInPracticeMode = false; // New flag to track if currently in practice mode
-
 
 function shuffle(array) {
     for (let i = array.length - 1; i > 0; i--) {
@@ -129,7 +127,6 @@ function startGame() {
 
     gameMode = newMode; // Update the game mode to the selected one
 
-    // Reset game variables
     score = 0;
     attempt = 0;
     selectedCards = [];
@@ -138,34 +135,26 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    // Hide practice mode elements
-    const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = '';
-    practiceList.style.display = 'none'; // Hide the practice list
-    document.querySelector('.game-board').style.display = 'block'; // Show the game board
-
-    isInPracticeMode = false; // Reset the flag since we're now starting a regular game
-
     if (!chapter) {
         alert('Please select a chapter.');
         return;
     }
 
-    // If "practice" mode is selected, switch to practice mode
+    // If "practice" mode is selected, show the practice section
     if (gameMode === 'practice') {
         showPracticeMode();
-        isInPracticeMode = true; // Set the flag for practice mode
         return;
     }
 
-    // For "easy" or "hard" mode, set up the game board
-    if (modeChanged || wordPairs.length === 0 || isInPracticeMode) {
+    // Reload word pairs if the mode changed to ensure a fresh start
+    if (modeChanged || wordPairs.length === 0) {
         loadWordPairsFromChapter(chapter);
     } else {
-        // If the mode hasn't changed and we're not coming from practice mode, just reset the game board
+        // If the mode hasn't changed, just reset the game board
         createCards(); // Recreate the cards without reloading the chapter
     }
 }
+
 
 
 function getStudyDuration() {
@@ -312,7 +301,6 @@ function showPracticeMode() {
         loadWordPairsFromChapter(chapter);
     }
 
-    isInPracticeMode = true; // Set the flag for practice mode
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
     practiceList.style.display = 'block';
@@ -322,7 +310,7 @@ function showPracticeMode() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong>  <strong>${pair.korean}</strong>`;
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> - ${pair.korean}`;
         practiceItem.addEventListener('click', () => {
             playSound(pair.soundFile);
         });
