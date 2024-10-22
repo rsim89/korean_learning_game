@@ -286,13 +286,19 @@ function checkMatch() {
     }
 }
 
-// Function to reset the game state
 function resetGame() {
     score = 0;
     attempt = 0;
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
-    loadWordPairsFromChapter(course, chapter, part); // Recreate the game cards
+    
+    // Retrieve course, chapter, and part values from the DOM
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+    const part = document.getElementById('part').value;
+    
+    // Load the word pairs for the selected chapter
+    loadWordPairsFromChapter(course, chapter, part);
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 }
 
