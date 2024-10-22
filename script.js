@@ -57,20 +57,26 @@ function loadWordPairsFromChapter(chapter) {
 function createCards() {
     const englishContainer = document.getElementById('english-cards');
     const koreanContainer = document.getElementById('korean-cards');
+    
     if (!englishContainer || !koreanContainer) {
         console.error('Card containers not found');
         return;
     }
+    
+    // Clear any existing cards
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
 
+    // Limit to 10 pairs for the game
     const gamePairs = wordPairs.slice(0, 10);
-    
+
+    // Extract Korean and English words and shuffle them
     displayKorean = gamePairs.map(pair => pair.korean);
     displayEnglish = gamePairs.map(pair => pair.english);
     shuffle(displayKorean);
     shuffle(displayEnglish);
 
+    // Create English cards
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -82,6 +88,7 @@ function createCards() {
         englishContainer.appendChild(card);
     });
 
+    // Create Korean cards
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
@@ -90,6 +97,7 @@ function createCards() {
         card.dataset.language = 'korean';
         card.dataset.word = word;
 
+        // Get corresponding sound file
         let soundFile = gamePairs.find(pair => pair.korean === word).soundFile;
         if (!soundFile.endsWith('.mp3')) {
             soundFile += '.mp3';
@@ -99,6 +107,7 @@ function createCards() {
         koreanContainer.appendChild(card);
     });
 
+    // If in Hard mode, start the study period before the game begins
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
