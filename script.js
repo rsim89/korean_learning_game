@@ -152,6 +152,17 @@ function playSound(course, chapter, soundFile) {
     });
 }
 
+function playFeedbackSound(isCorrect) {
+    const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/feedback/${soundFile}`;
+    const audio = new Audio(audioPath);
+
+    audio.play().catch(error => {
+        console.error('Error playing the feedback audio file:', error);
+        alert('Could not play the feedback audio. Please ensure the file exists and is accessible.');
+    });
+}
+
 function selectCard(card) {
     if (isStudying) return;
     if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
@@ -197,6 +208,7 @@ function checkMatch() {
         });
 
         document.getElementById('message').innerText = 'Correct!';
+        playFeedbackSound(true); // Play the correct feedback sound
     } else {
         setTimeout(() => {
             Swal.fire({
@@ -221,6 +233,7 @@ function checkMatch() {
             }
 
             document.getElementById('message').innerText = 'Try again!';
+            playFeedbackSound(false); // Play the incorrect feedback sound
         }, 1000);
     }
 
