@@ -319,17 +319,26 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 
 function startPracticeMode() {
     const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = '';
-    practiceList.style.display = 'block';
-    document.querySelector('.game-board').style.display = 'none';
+    practiceList.innerHTML = ''; // Clear existing items
+    practiceList.style.display = 'block'; // Show practice list
+    document.querySelector('.game-board').style.display = 'none'; // Hide game board
 
     wordPairs.forEach(pair => {
-        const practiceItem = document.createElement('div');
-        practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong> <strong>${pair.korean}</strong>`;
+        // Clone the template
+        const practiceItemTemplate = document.querySelector('.practice-item-template');
+        const practiceItem = practiceItemTemplate.cloneNode(true);
+        practiceItem.style.display = 'block'; // Make the cloned item visible
+
+        // Set the English and Korean words
+        practiceItem.querySelector('.english-word').innerText = pair.english;
+        practiceItem.querySelector('.korean-word').innerText = pair.korean;
+
+        // Add click event to play sound
         practiceItem.addEventListener('click', () => {
             playSound(pair.soundFile);
         });
+
+        // Append the new item to the practice list
         practiceList.appendChild(practiceItem);
     });
 }
