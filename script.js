@@ -293,12 +293,7 @@ function startMatchingGame() {
     const chapter = document.getElementById('chapter').value;
     const part = document.getElementById('part').value;
     const selectedMode = document.querySelector('input[name="mode"]:checked');
-
-    if (!selectedMode || !['easy', 'hard'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy or Hard).');
-        return;
-    }
-    
+   
     document.querySelector('.game-board').style.display = 'block';
     gameMode = selectedMode.value;
     score = 0;
