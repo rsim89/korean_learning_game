@@ -95,10 +95,13 @@ function getStudyDuration() {
 }
 
 function resetCountdown() {
-    clearInterval(countdownInterval); // Clear any existing countdown
+    clearInterval(countdownInterval); // Stop the current countdown
     const countdownElement = document.getElementById('countdown-timer');
-    countdownElement.innerText = ''; // Clear the text
+    countdownElement.innerText = ''; // Clear the countdown display
     countdownElement.style.display = 'none'; // Hide the countdown
+
+    // Reset study duration to the default or valid value
+    const studyDuration = getStudyDuration();
 }
 
 function loadWordPairsFromChapter(course, chapter, part) {
@@ -392,8 +395,14 @@ document.getElementById('start-button').addEventListener('click', () => {
     selectedCards = [];
     isStudying = false; // Reset study flag
     
-    // Reset the countdown
+    // Reset countdown and study duration
     resetCountdown();
+    const studyDuration = getStudyDuration();
+
+    // Start a new countdown with the reset study duration if needed
+    if (gameMode === 'hard') {
+        startCountdown(studyDuration);
+    }
     
     // Update UI elements
     document.getElementById('score').innerText = `Score: ${score}`;
