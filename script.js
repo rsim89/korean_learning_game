@@ -207,16 +207,17 @@ function createCards() {
         koreanContainer.appendChild(card);
     });
 
+    // Clear any existing timeout to avoid overlap
+    clearTimeout(flipTimeout);
+    
+    
     // If in Hard mode, start the study period before the game begins
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
-
-        // Clear any existing timeout to avoid overlap
-        clearTimeout(flipTimeout);
-
+        
         startCountdown(studyDuration);
-
+        
         // Set a new timeout to flip the cards back after the study duration
         flipTimeout = setTimeout(() => {
             flipAllCardsBack();
