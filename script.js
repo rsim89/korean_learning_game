@@ -266,7 +266,7 @@ function checkMatch() {
             text: 'You scored 100 points! 🎉',
             confirmButtonText: 'Restart'
         }).then(() => {
-            loadWordPairsFromChapter(course, chapter, part);
+            createCards(); //
             adjustLayoutForMode(); // Adjust the layout based on the selected mode
         });
         document.getElementById('message').innerText = 'Congratulations!';
