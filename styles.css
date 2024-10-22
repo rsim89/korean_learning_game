@@ -22,20 +22,18 @@ h1 {
     margin-bottom: 20px;
 }
 
-
 .game-board {
-    display: flex; /* Use flexbox layout */
-    justify-content: space-between; /* Space out the two card containers */
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
 }
 
 .cards {
-    width: 40%; /* Reduce width to 40% of the game board */
+    width: 45%;
     display: flex;
-    flex-direction: column; /* Keep the cards stacked vertically */
-    align-items: center; /* Center align the cards */
-    margin: 0 5%; /* Optional: Add margin to create space between cards */
+    flex-direction: row;
+    align-items: center;
 }
-
 
 .card {
     width: 80%;
@@ -92,6 +90,7 @@ h1 {
 #reset-button:hover {
     background-color: #0056b3;
 }
+
 
 .practice-list {
     margin-top: 20px;
