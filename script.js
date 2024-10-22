@@ -205,14 +205,22 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
+            // For hard mode, flip the cards back to [CARD]
             if (gameMode === 'hard') {
-                // For hard mode, flip the cards back to [CARD]
                 firstCard.classList.remove('revealed');
                 firstCard.innerText = '[CARD]';
                 secondCard.classList.remove('revealed');
                 secondCard.innerText = '[CARD]';
             }
-            // For easy mode, leave the cards showing the actual words and allow another attempt
+
+            // For easy mode, flip the cards back but show the actual words
+            if (gameMode === 'easy') {
+                firstCard.classList.remove('revealed');
+                firstCard.innerText = firstCard.dataset.word; // Show the actual word
+                secondCard.classList.remove('revealed');
+                secondCard.innerText = secondCard.dataset.word; // Show the actual word
+            }
+
             document.getElementById('message').innerText = 'Try again!';
         }, 1000);
     }
@@ -225,8 +233,6 @@ function checkMatch() {
         document.getElementById('reset-button').style.display = 'block';
     }
 }
-
-
 
 document.getElementById('start-button').addEventListener('click', startGame);
 document.getElementById('reset-button').addEventListener('click', startGame);
