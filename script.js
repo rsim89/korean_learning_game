@@ -16,12 +16,12 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx;
+    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
 
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
-                throw new Error(HTTP error! Status: ${response.status});
+                throw new Error(`HTTP error! Status: ${response.status}`);
             }
             return response.arrayBuffer();
         })
@@ -132,7 +132,7 @@ function startMatchingGame() {
     attempt = 0;
     selectedCards = [];
     isStudying = false; // Reset study flag
-    document.getElementById('score').innerText = Score: ${score};
+    document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
@@ -141,22 +141,14 @@ function startMatchingGame() {
         return;
     }
 
-    // If "practice" mode is selected, show the practice section
-    if (gameMode === 'practice') {
-        showPracticeMode();
-        return;
-    }
-
     // Reload word pairs if the mode changed to ensure a fresh start
-    if (modeChanged || wordPairs.length === 0) {
+    if (typeof modeChanged !== 'undefined' && modeChanged || wordPairs.length === 0) {
         loadWordPairsFromChapter(chapter);
     } else {
         // If the mode hasn't changed, just reset the game board
         createCards(); // Recreate the cards without reloading the chapter
     }
 }
-
-
 
 function getStudyDuration() {
     const durationInput = document.getElementById('study-duration').value;
@@ -194,7 +186,7 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audioPath = https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile};
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile}`;
     const audio = new Audio(audioPath);
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
@@ -216,12 +208,12 @@ function checkMatch() {
         score += 10;
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
-        document.getElementById('score').innerText = Score: ${score};
+        document.getElementById('score').innerText = `Score: ${score}`;
 
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
-            text: You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!,
+            text: `You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`,
             confirmButtonText: 'OK'
         });
 
@@ -268,12 +260,12 @@ function startCountdown(duration) {
     let remainingTime = duration;
     const countdownElement = document.getElementById('countdown-timer');
 
-    countdownElement.innerText = Time left: ${remainingTime} sec;
+    countdownElement.innerText = `Time left: ${remainingTime} sec`;
     countdownElement.style.display = 'block'; // Make sure the timer is visible
 
     const countdownInterval = setInterval(() => {
         remainingTime -= 1;
-        countdownElement.innerText = Time left: ${remainingTime} sec;
+        countdownElement.innerText = `Time left: ${remainingTime} sec`;
 
         if (remainingTime <= 0) {
             clearInterval(countdownInterval);
