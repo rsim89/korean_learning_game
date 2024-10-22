@@ -206,7 +206,7 @@ function checkMatch() {
     const firstWord = firstCard.dataset.word;
     const secondWord = secondCard.dataset.word;
 
-    const match = wordPairs.some(pair =>
+    const match = gamePairs.some(pair =>
         (pair.korean === firstWord && pair.english === secondWord) ||
         (pair.korean === secondWord && pair.english === firstWord)
     );
@@ -259,7 +259,7 @@ function checkMatch() {
 
     // Check if all pairs are matched
     const totalMatchedCards = document.querySelectorAll('.matched').length;
-    const totalCards = wordPairs.length * 2;
+    const totalCards = gamePairs.length * 2;
     if (totalMatchedCards === totalCards) {
         // All pairs matched successfully
         Swal.fire({
