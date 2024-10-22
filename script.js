@@ -256,7 +256,7 @@ function checkMatch() {
 
     selectedCards = [];
     attempt += 1;
-
+      
     // Check if score has reached 100
     if (score >= 100) {
         // Show congratulatory message when score reaches 100
@@ -266,7 +266,8 @@ function checkMatch() {
             text: 'You scored 100 points! 🎉',
             confirmButtonText: 'Restart'
         }).then(() => {
-            startMatchingGame(); // Restart the game when the user clicks "Restart"
+            loadWordPairsFromChapter(course, chapter, part);
+            adjustLayoutForMode(); // Adjust the layout based on the selected mode
         });
         document.getElementById('message').innerText = 'Congratulations!';
         document.getElementById('reset-button').style.display = 'block';
