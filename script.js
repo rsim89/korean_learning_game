@@ -25,6 +25,45 @@ function toggleMute() {
     muteButton.src = isMuted ? 'images/mute.svg' : 'images/unmute.svg';
 }
 
+function getStudyDuration() {
+    const durationInput = document.getElementById('study-duration');
+    let duration = parseInt(durationInput.value, 10);
+
+    // Set to a default duration if the input is invalid or out of range
+    if (isNaN(duration) || duration < 1) {
+        duration = 10; // Default to 10 seconds
+    } else if (duration > 60) {
+        duration = 60;
+    }
+
+    // Reset the input field to the determined duration
+    durationInput.value = duration;
+    return duration;
+}
+
+function playSound(course, chapter, soundFile) {
+    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
+    const audio = new Audio(audioPath);
+
+    audio.play().catch(error => {
+        console.error('Error playing the audio file:', error);
+        alert('Could not play the audio. Please ensure the file exists and is accessible.');
+    });
+}
+
+function playFeedbackSound(isCorrect) {
+    if (isMuted) return; // Do not play sound if muted
+
+    const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
+    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
+    const audio = new Audio(audioPath);
+
+    audio.play().catch(error => {
+        console.error('Error playing the feedback audio file:', error);
+        alert('Could not play the feedback audio. Please ensure the file exists and is accessible.');
+    });
+}
+
 function loadWordPairsFromChapter(course, chapter, part) {
     const filePath = `${BASE_URL}vocab/${course}_${chapter}_${part}.xlsx`;
 
@@ -141,44 +180,6 @@ function flipAllCardsBack() {
     isStudying = false;
 }
 
-function getStudyDuration() {
-    const durationInput = document.getElementById('study-duration');
-    let duration = parseInt(durationInput.value, 10);
-
-    // Set to a default duration if the input is invalid or out of range
-    if (isNaN(duration) || duration < 1) {
-        duration = 10; // Default to 10 seconds
-    } else if (duration > 60) {
-        duration = 60;
-    }
-
-    // Reset the input field to the determined duration
-    durationInput.value = duration;
-    return duration;
-}
-
-function playSound(course, chapter, soundFile) {
-    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
-    const audio = new Audio(audioPath);
-
-    audio.play().catch(error => {
-        console.error('Error playing the audio file:', error);
-        alert('Could not play the audio. Please ensure the file exists and is accessible.');
-    });
-}
-
-function playFeedbackSound(isCorrect) {
-    if (isMuted) return; // Do not play sound if muted
-
-    const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
-    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
-    const audio = new Audio(audioPath);
-
-    audio.play().catch(error => {
-        console.error('Error playing the feedback audio file:', error);
-        alert('Could not play the feedback audio. Please ensure the file exists and is accessible.');
-    });
-}
 
 function selectCard(card) {
     if (isStudying) return;
@@ -264,7 +265,7 @@ function checkMatch() {
 }
 
 function startCountdown(duration) {
-    if (gameMode !== 'hard') return; // Only show the countdown for hard mode
+    if (gameMode !== 'hard') return; // Only show the countdown for Hard mode
 
     let remainingTime = duration;
     const countdownElement = document.getElementById('countdown-timer');
@@ -284,6 +285,7 @@ function startCountdown(duration) {
         if (remainingTime <= 0) {
             clearInterval(countdownInterval);
             countdownElement.style.display = 'none'; // Hide the countdown when time is up
+            flipAllCardsBack(); // Flip all cards back when the countdown ends
         }
     }, 1000);
 }
@@ -298,7 +300,7 @@ function startMatchingGame() {
         alert('Please select a valid game mode (Easy or Hard).');
         return;
     }
-    
+
     document.querySelector('.game-board').style.display = 'block';
     gameMode = selectedMode.value;
     score = 0;
@@ -314,11 +316,19 @@ function startMatchingGame() {
         return;
     }
 
-    // Hide the countdown if not in hard mode
+    // Hide the countdown if not in Hard mode
     const countdownElement = document.getElementById('countdown-timer');
     countdownElement.style.display = gameMode === 'hard' ? 'block' : 'none';
 
     loadWordPairsFromChapter(course, chapter, part);
+
+    if (gameMode === 'hard') {
+        // Set the study duration and start the countdown
+        const studyDuration = getStudyDuration();
+        startCountdown(studyDuration);
+    }
+
+    adjustLayoutForMode(); // Adjust the layout based on the selected mode
 }
 
 function startPracticeMode() {
