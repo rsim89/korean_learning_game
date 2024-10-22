@@ -16,7 +16,7 @@ function shuffle(array) {
 }
 
 function loadWordPairsFromChapter(chapter) {
-    const filePath = `https://rsim89.github.io/korean_words/vocab/${chapter}.xlsx`;
+    const filePath = `https://rsim89.github.io/korean_words/vocab/${course}_${chapter}_${part}.xlsx`;
 
     fetch(filePath)
         .then(response => {
@@ -157,7 +157,7 @@ function selectCard(card) {
 }
 
 function playSound(soundFile) {
-    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/KORE121/ch6/${soundFile}`;
+    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${course}/${chapter}/${soundFile}`;
     const audio = new Audio(audioPath);
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
