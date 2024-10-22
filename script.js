@@ -405,9 +405,10 @@ function PracticePicture() {
         checkButton.innerText = 'Check';
         checkButton.style.marginRight = '5px';
 
-        // Add click event to the check button to verify the answer using Swal.fire
+        // Add click event to the check button to verify the answer using Swal.fire and play feedback sound
         checkButton.addEventListener('click', () => {
             if (inputField.value.trim().toLowerCase() === pair.english.toLowerCase()) {
+                playFeedbackSound(true); // Play the correct feedback sound
                 Swal.fire({
                     icon: 'success',
                     title: 'Correct!',
@@ -415,6 +416,7 @@ function PracticePicture() {
                     confirmButtonText: 'OK'
                 });
             } else {
+                playFeedbackSound(false); // Play the incorrect feedback sound
                 Swal.fire({
                     icon: 'error',
                     title: 'Incorrect',
