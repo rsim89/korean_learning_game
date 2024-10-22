@@ -427,6 +427,8 @@ function PracticePicture() {
         iconColumn.className = 'icon-column';
         iconColumn.style.display = 'flex';
         iconColumn.style.flex = '0 0 auto';
+        iconColumn.style.marginRight = '30px'; // Increased space between icons and Korean word
+
 
         // Create an SVG icon for the audio
         const audioIcon = document.createElement('img');
