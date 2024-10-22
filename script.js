@@ -36,7 +36,10 @@ function loadWordPairsFromChapter(course, chapter, part) {
                 if (row.length >= 3) {
                     const korean = row[0];
                     const english = row[1];
-                    const soundFile = row[2];
+                    let soundFile = row[2];
+                    if (!soundFile.endsWith('.mp3')) {
+                        soundFile += '.mp3';
+                    }
                     wordPairs.push({ korean, english, soundFile });
                 }
             }
@@ -156,9 +159,8 @@ function selectCard(card) {
     }
 }
 
-function playSound(course, chapter, soundFile) {
-    const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${course}/${chapter}/${soundFile}`;
-    const audio = new Audio(audioPath);
+function playSound(soundFile) {
+    const audio = new Audio(soundFile);
     audio.play().catch(error => {
         console.error('Error playing the audio file:', error);
         alert('Could not play the audio. Please ensure the file exists and is accessible.');
@@ -243,7 +245,6 @@ function startCountdown(duration) {
     }, 1000);
 }
 
-
 function startMatchingGame() {
     const course = document.getElementById('course').value;
     const chapter = document.getElementById('chapter').value;
@@ -289,7 +290,6 @@ function startPracticeMode() {
         practiceList.appendChild(practiceItem);
     });
 }
-
 
 function adjustLayoutForMode() {
     const container = document.querySelector('.container');
