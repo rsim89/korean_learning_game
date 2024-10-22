@@ -138,12 +138,16 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
+    // Hide the practice list and show the game board
+    document.getElementById('practice-list').style.display = 'none';
+    document.querySelector('.game-board').style.display = 'block';
+
     if (!chapter) {
         alert('Please select a chapter.');
         return;
     }
 
-    // Reload word pairs if the mode changed to ensure a fresh start
+    // Reload word pairs if the mode changed or if starting a new game
     if (modeChanged || wordPairs.length === 0) {
         loadWordPairsFromChapter(chapter);
     } else {
@@ -300,7 +304,8 @@ function showPracticeMode() {
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
     practiceList.style.display = 'block';
-    document.querySelector('.game-board').style.display = 'none';
+    document.querySelector('.game-board').style.display = 'none'; // Hide the game board
+    document.getElementById('countdown-timer').style.display = 'none'; // Hide the countdown timer if in practice
 
     // List all word pairs for practice mode
     wordPairs.forEach(pair => {
