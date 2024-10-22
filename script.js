@@ -8,6 +8,8 @@ let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
 let isMuted = false;
+let countdownInterval; // Store the interval ID globally
+
 const BASE_URL = 'https://rsim89.github.io/korean_words/';
 
 function shuffle(array) {
@@ -257,21 +259,26 @@ function checkMatch() {
 }
 
 function startCountdown(duration) {
-    if (gameMode !== 'hard') return; // Only proceed if the game mode is "hard"
+    if (gameMode !== 'hard') return; // Only show the countdown for hard mode
 
     let remainingTime = duration;
     const countdownElement = document.getElementById('countdown-timer');
 
+    // Reset and update the countdown display
     countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
     countdownElement.style.display = 'block';
 
-    const countdownInterval = setInterval(() => {
+    // Clear any existing countdown interval to avoid overlap
+    clearInterval(countdownInterval);
+
+    // Start a new countdown
+    countdownInterval = setInterval(() => {
         remainingTime -= 1;
         countdownElement.innerText = `You have ${remainingTime} seconds before the words are hidden.`;
 
         if (remainingTime <= 0) {
             clearInterval(countdownInterval);
-            countdownElement.style.display = 'none';
+            countdownElement.style.display = 'none'; // Hide the countdown when time is up
         }
     }, 1000);
 }
@@ -301,6 +308,10 @@ function startMatchingGame() {
         alert('Please select a chapter.');
         return;
     }
+
+    // Hide the countdown if not in hard mode
+    const countdownElement = document.getElementById('countdown-timer');
+    countdownElement.style.display = gameMode === 'hard' ? 'block' : 'none';
 
     loadWordPairsFromChapter(course, chapter, part);
 }
