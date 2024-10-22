@@ -96,13 +96,14 @@ function createCards() {
         koreanContainer.appendChild(card);
     });
 
-    // Flip the cards back to [CARD] after the study duration
     if (gameMode === 'hard') {
         isStudying = true; // Prevent interaction during the study period
-        const studyDuration = getStudyDuration() * 1000; // Get the study duration in milliseconds
+        const studyDuration = getStudyDuration(); // Get the study duration in seconds
+        startCountdown(studyDuration); // Start the countdown
         setTimeout(() => {
-            flipAllCardsBack();
-        }, studyDuration);
+            flipAllCardsBack(); // Flip cards back after the study period
+            isStudying = false; // Allow interaction after the study period
+        }, studyDuration * 1000);
     }
 }
 
@@ -138,8 +139,16 @@ function startGame() {
 
 function getStudyDuration() {
     const durationInput = document.getElementById('study-duration').value;
-    const duration = parseInt(durationInput, 10);
-    return isNaN(duration) || duration <= 0 ? 15 : duration; // Default to 15 seconds if input is invalid
+    let duration = parseInt(durationInput, 10);
+    
+    // Ensure the duration is between 1 and 60 seconds
+    if (isNaN(duration) || duration < 1) {
+        duration = 1; // Minimum of 1 second
+    } else if (duration > 60) {
+        duration = 60; // Maximum of 60 seconds
+    }
+
+    return duration;
 }
 
 function selectCard(card) {
@@ -232,6 +241,24 @@ function checkMatch() {
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
+}
+
+function startCountdown(duration) {
+    let remainingTime = duration;
+    const countdownElement = document.getElementById('countdown-timer');
+
+    countdownElement.innerText = `Time left: ${remainingTime} sec`;
+    countdownElement.style.display = 'block'; // Make sure the timer is visible
+
+    const countdownInterval = setInterval(() => {
+        remainingTime -= 1;
+        countdownElement.innerText = `Time left: ${remainingTime} sec`;
+
+        if (remainingTime <= 0) {
+            clearInterval(countdownInterval);
+            countdownElement.style.display = 'none'; // Hide the timer when done
+        }
+    }, 1000);
 }
 
 document.getElementById('start-button').addEventListener('click', startGame);
