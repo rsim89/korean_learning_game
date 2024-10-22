@@ -303,7 +303,6 @@ document.getElementById('start-button').addEventListener('click', () => {
         loadWordPairsFromChapter(chapter);
     }
 });
-
 document.getElementById('reset-button').addEventListener('click', startMatchingGame);
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
