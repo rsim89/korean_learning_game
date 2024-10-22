@@ -377,18 +377,29 @@ function PracticePicture() {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
 
-        // Display only the Korean word and make it clickable
-        practiceItem.innerHTML = `<strong style="cursor: pointer;">${pair.korean}</strong>`;
+        // Display the Korean word
+        practiceItem.innerHTML = `<strong style="cursor: pointer; margin-right: 10px;">${pair.korean}</strong>`;
+        // Create an SVG icon for the Google Image search
+        const searchIcon = document.createElement('img');
+        searchIcon.src = `${BASE_URL}images/search-icon.svg'`; // Make sure you have this SVG file in the correct path
+        searchIcon.alt = 'Search Image';
+        searchIcon.style.cursor = 'pointer';
+        searchIcon.style.width = '20px';
+        searchIcon.style.height = '20px';
+        searchIcon.style.marginLeft = '5px';
 
-        //  Add a click event for playing the sound 
+        // Add click event to the SVG icon to perform a Google Image search
+        searchIcon.addEventListener('click', () => {
+            PracticePicture(pair.korean);
+        });
+
+        // Add click event for playing the sound when clicking the word
         practiceItem.addEventListener('click', () => {
             playSound(course, chapter, pair.soundFile);
         });
-        
-        // Optionally, add a click event to perform a Google Image search for the Korean word (if needed)
-        practiceItem.addEventListener('dblclick', () => {
-            googleImageSearch(pair.korean);
-        });
+
+        // Append the SVG icon to the practice item
+        practiceItem.appendChild(searchIcon);
 
         // Append the practice item to the list
         practiceList.appendChild(practiceItem);
