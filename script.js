@@ -363,7 +363,6 @@ function startPracticeMode() {
     });
 }
 
-
 function PracticePicture() {
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
@@ -376,19 +375,24 @@ function PracticePicture() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.style.display = 'flex'; // Use flexbox for layout
-        practiceItem.style.justifyContent = 'space-between'; // Separate columns
+        practiceItem.style.display = 'flex';
+        practiceItem.style.justifyContent = 'space-between';
 
         // Create a container for the Korean word
         const wordColumn = document.createElement('div');
         wordColumn.className = 'word-column';
-        wordColumn.style.flex = '1'; // Make it flexible
+        wordColumn.style.flex = '1';
         wordColumn.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
+
+        // Play sound when the Korean word is clicked
+        wordColumn.addEventListener('click', () => {
+            playSound(course, chapter, pair.soundFile);
+        });
 
         // Create a container for the input elements
         const inputColumn = document.createElement('div');
         inputColumn.className = 'input-column';
-        inputColumn.style.flex = '2'; // Make this column take more space
+        inputColumn.style.flex = '2';
 
         // Create an input field for typing the English word
         const inputField = document.createElement('input');
@@ -401,22 +405,41 @@ function PracticePicture() {
         checkButton.innerText = 'Check';
         checkButton.style.marginRight = '5px';
 
-        // Create a span to show feedback
-        const feedback = document.createElement('span');
-        feedback.style.marginLeft = '10px';
+        // Add click event to the check button to verify the answer using Swal.fire
+        checkButton.addEventListener('click', () => {
+            if (inputField.value.trim().toLowerCase() === pair.english.toLowerCase()) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Correct!',
+                    text: `You are correct! 😊 The word pair '${pair.korean}' and '${pair.english}' is a correct match!`,
+                    confirmButtonText: 'OK'
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Incorrect',
+                    text: `Sorry, that's not correct. The correct answer is '${pair.english}'.`,
+                    confirmButtonText: 'Try Again'
+                });
+            }
+        });
 
         // Create an SVG icon for the Google Image search
         const searchIcon = document.createElement('img');
-        searchIcon.src = `${BASE_URL}images/search.svg`;
+        searchIcon.src = `${BASE_URL}images/search.svg`; // Make sure the path is correct
         searchIcon.style.cursor = 'pointer';
         searchIcon.style.width = '20px';
         searchIcon.style.height = '20px';
         searchIcon.style.marginLeft = '5px';
 
+        // Use the global googleImageSearch function
+        searchIcon.addEventListener('click', () => {
+            googleImageSearch(pair.korean);
+        });
+
         // Append input elements to the input column
         inputColumn.appendChild(inputField);
         inputColumn.appendChild(checkButton);
-        inputColumn.appendChild(feedback);
         inputColumn.appendChild(searchIcon);
 
         // Append the word column and input column to the practice item
@@ -427,6 +450,8 @@ function PracticePicture() {
         practiceList.appendChild(practiceItem);
     });
 }
+
+
 
 
 function adjustLayoutForMode() {
