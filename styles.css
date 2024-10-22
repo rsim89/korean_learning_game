@@ -91,18 +91,13 @@ h1 {
     background-color: #0056b3;
 }
 
-/* Center the practice list content on the screen */
 .practice-list {
+    margin-top: 20px;
+    font-size: 18px;
+    text-align: left;
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center;
-    width: auto; /* or set a specific width if necessary */
 }
 
 .practice-item {
