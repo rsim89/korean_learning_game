@@ -142,13 +142,18 @@ function flipAllCardsBack() {
 }
 
 function getStudyDuration() {
-    const durationInput = document.getElementById('study-duration').value;
-    let duration = parseInt(durationInput, 10);
+    const durationInput = document.getElementById('study-duration');
+    let duration = parseInt(durationInput.value, 10);
+
+    // Set to a default duration if the input is invalid or out of range
     if (isNaN(duration) || duration < 1) {
-        duration = 1;
+        duration = 10; // Default to 10 seconds
     } else if (duration > 60) {
         duration = 60;
     }
+
+    // Reset the input field to the determined duration
+    durationInput.value = duration;
     return duration;
 }
 
