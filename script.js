@@ -252,7 +252,8 @@ function startMatchingGame() {
         alert('Please select a valid game mode (Easy or Hard).');
         return;
     }
-
+    
+    document.querySelector('.game-board').style.display = 'block';
     gameMode = selectedMode.value;
     score = 0;
     attempt = 0;
@@ -341,13 +342,8 @@ document.getElementById('start-button').addEventListener('click', () => {
     document.querySelector('.game-board').style.display = 'block';
     document.getElementById('practice-list').style.display = 'none';
 
-    // Start the appropriate mode based on the selection
-    if (gameMode === 'practice') {
-        startPracticeMode();
-    } else {
-        // Reload word pairs if the chapter or mode changed, to ensure a fresh start
-        loadWordPairsFromChapter(chapter);
-    }
+    loadWordPairsFromChapter(chapter);
+    
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
 
