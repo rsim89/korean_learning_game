@@ -306,6 +306,7 @@ function adjustLayoutForMode() {
     }
 }
 
+
 document.getElementById('start-button').addEventListener('click', () => {
     // Fetch the latest mode and chapter
     const selectedMode = document.querySelector('input[name="mode"]:checked');
@@ -314,12 +315,6 @@ document.getElementById('start-button').addEventListener('click', () => {
     // Validate the selected mode
     if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
         alert('Please select a valid game mode (Easy, Hard, or Practice).');
-        return;
-    }
-
-    // Validate the selected chapter
-    if (!chapter) {
-        alert('Please select a chapter.');
         return;
     }
 
@@ -337,21 +332,16 @@ document.getElementById('start-button').addEventListener('click', () => {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
+    // Show or hide the score based on the game mode
+    document.getElementById('score').style.display = (gameMode === 'practice') ? 'none' : 'block';
+
+    // Show or hide the timer based on the game mode (only show for hard mode)
+    document.getElementById('countdown-timer').style.display = (gameMode === 'hard') ? 'block' : 'none';
+
     // Show the game board and hide the practice list
     document.querySelector('.game-board').style.display = 'block';
     document.getElementById('practice-list').style.display = 'none';
 
-    // Start the appropriate mode based on the selection
-    if (gameMode === 'practice') {
-        startPracticeMode();
-    } else {
-        // Reload word pairs if the chapter or mode changed, to ensure a fresh start
-        loadWordPairsFromChapter(chapter);
-    }
-    adjustLayoutForMode(); // Adjust the layout based on the selected mode
-});
-
-document.getElementById('reset-button').addEventListener('click', startMatchingGame);
-document.getElementById('refresh-button').addEventListener('click', () => {
-    location.reload();
+    // Load word pairs from the selected chapter for all modes
+    loadWordPairsFromChapter(chapter);
 });
