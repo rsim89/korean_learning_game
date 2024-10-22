@@ -376,59 +376,52 @@ function PracticePicture() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
+        practiceItem.style.display = 'flex'; // Use flexbox for layout
+        practiceItem.style.justifyContent = 'space-between'; // Separate columns
 
-        // Display the Korean word
-        practiceItem.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
+        // Create a container for the Korean word
+        const wordColumn = document.createElement('div');
+        wordColumn.className = 'word-column';
+        wordColumn.style.flex = '1'; // Make it flexible
+        wordColumn.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
+
+        // Create a container for the input elements
+        const inputColumn = document.createElement('div');
+        inputColumn.className = 'input-column';
+        inputColumn.style.flex = '2'; // Make this column take more space
 
         // Create an input field for typing the English word
         const inputField = document.createElement('input');
         inputField.type = 'text';
         inputField.placeholder = 'Type English word';
-        inputField.style.marginLeft = '10px';
-        
+        inputField.style.marginRight = '10px';
+
         // Create a button to check the answer
         const checkButton = document.createElement('button');
         checkButton.innerText = 'Check';
-        checkButton.style.marginLeft = '5px';
+        checkButton.style.marginRight = '5px';
 
         // Create a span to show feedback
         const feedback = document.createElement('span');
         feedback.style.marginLeft = '10px';
 
-        // Add click event to the check button to verify the answer
-        checkButton.addEventListener('click', () => {
-            if (inputField.value.trim().toLowerCase() === pair.english.toLowerCase()) {
-                feedback.innerText = 'Correct!';
-                feedback.style.color = 'green';
-            } else {
-                feedback.innerText = `Incorrect. The correct answer is "${pair.english}".`;
-                feedback.style.color = 'red';
-            }
-        });
-
         // Create an SVG icon for the Google Image search
         const searchIcon = document.createElement('img');
-        searchIcon.src = '${BASE_URL}images/search.svg'; // Make sure you have this SVG file in the correct path
+        searchIcon.src = `${BASE_URL}images/search.svg`;
         searchIcon.style.cursor = 'pointer';
         searchIcon.style.width = '20px';
         searchIcon.style.height = '20px';
         searchIcon.style.marginLeft = '5px';
 
-        // Add click event to the SVG icon to perform a Google Image search
-        searchIcon.addEventListener('click', () => {
-            googleImageSearch(pair.korean);
-        });
+        // Append input elements to the input column
+        inputColumn.appendChild(inputField);
+        inputColumn.appendChild(checkButton);
+        inputColumn.appendChild(feedback);
+        inputColumn.appendChild(searchIcon);
 
-        // Add click event for playing the sound when clicking the word
-        practiceItem.addEventListener('click', () => {
-            playSound(course, chapter, pair.soundFile);
-        });
-
-        // Append all elements to the practice item
-        practiceItem.appendChild(inputField);
-        practiceItem.appendChild(checkButton);
-        practiceItem.appendChild(feedback);
-        practiceItem.appendChild(searchIcon);
+        // Append the word column and input column to the practice item
+        practiceItem.appendChild(wordColumn);
+        practiceItem.appendChild(inputColumn);
 
         // Append the practice item to the list
         practiceList.appendChild(practiceItem);
