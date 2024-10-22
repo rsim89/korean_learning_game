@@ -41,14 +41,17 @@
                 <input type="radio" name="mode" value="hard" id="hard-mode" checked> Hard
             </div>
             <div>
-            <label for="study-duration">Study Duration (seconds):</label>
-            <input type="number" id="study-duration" value="15" min="1">
+                <label for="study-duration">Study Duration (seconds):</label>
+                <input type="number" id="study-duration" value="15" min="1">
             </div>
-            <div id="countdown-timer" class="timer"></div>
             <button id="start-button">Start Game</button>
             <button id="practice-button">Practice</button>
             <button id="refresh-button">Reset</button> <!-- New Reset Button -->
         </div>
+
+        <!-- Countdown Timer Section -->
+        <div id="countdown-timer" class="timer" style="display: none;"></div>
+
         <div class="game-board">
             <div id="english-cards" class="cards"></div>
             <div id="korean-cards" class="cards"></div>
