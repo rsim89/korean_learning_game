@@ -136,31 +136,32 @@ function startGame() {
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
 
-    // Hide practice mode elements
+    // Hide practice mode elements regardless of the current state
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
-    practiceList.style.display = 'none'; // Hide the practice list
-    document.querySelector('.game-board').style.display = 'block'; // Show the game board
+    practiceList.style.display = 'none'; // Ensure the practice list is hidden
+    document.querySelector('.game-board').style.display = 'block'; // Ensure the game board is shown
 
     if (!chapter) {
         alert('Please select a chapter.');
         return;
     }
 
-    // If "practice" mode is selected, show the practice section
+    // If "practice" mode is selected, switch to practice mode
     if (gameMode === 'practice') {
         showPracticeMode();
         return;
     }
 
-    // Reload word pairs if the mode changed or switching from practice mode
+    // For "easy" or "hard" mode, set up the game board
     if (modeChanged || wordPairs.length === 0 || practiceList.style.display === 'block') {
         loadWordPairsFromChapter(chapter);
     } else {
-        // If the mode hasn't changed and not coming from practice, just reset the game board
+        // If the mode hasn't changed and we're not coming from practice mode, just reset the game board
         createCards(); // Recreate the cards without reloading the chapter
     }
 }
+
 
 
 
