@@ -32,8 +32,8 @@ h1 {
 }
 
 .card-column {
-    width: 45%;
-    min-width: 250px; /* Ensure each column has a minimum width */
+    width: 35%; /* Reduced width for narrower columns */
+    min-width: 200px; /* Adjust minimum width for better responsiveness */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -45,7 +45,7 @@ h1 {
 }
 
 .card {
-    width: 80%;
+    width: 90%; /* Increased width to fill more space in narrower columns */
     margin: 10px 0;
     background-color: #007bff;
     color: white;
