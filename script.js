@@ -8,6 +8,7 @@ let displayEnglish = [];
 let gameMode = 'hard'; // Default to hard mode
 let isStudying = false; // Flag to track if the study period is active
 let isMuted = false;
+let flipTimeout; // Variable to hold the timeout ID for flipping the cards back
 let countdownInterval; // Store the interval ID globally
 
 const BASE_URL = 'https://rsim89.github.io/korean_words/';
@@ -203,8 +204,14 @@ function createCards() {
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
+
+        // Clear any existing timeout to avoid overlap
+        clearTimeout(flipTimeout);
+
         startCountdown(studyDuration);
-        setTimeout(() => {
+
+        // Set a new timeout to flip the cards back after the study duration
+        flipTimeout = setTimeout(() => {
             flipAllCardsBack();
             isStudying = false;
         }, studyDuration * 1000);
