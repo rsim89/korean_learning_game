@@ -108,7 +108,7 @@ h1 {
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    margin: 5px 0;
+    margin: 5px auto; /* Centering the item horizontally */
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
