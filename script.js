@@ -120,11 +120,16 @@ function startGame() {
     const chapter = document.getElementById('chapter').value;
     const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get selected mode
 
+    // Check if the game mode has changed
+    const newMode = selectedMode ? selectedMode.value : 'hard';
+    const modeChanged = newMode !== gameMode; // Determine if the mode has changed
+
+    gameMode = newMode; // Update the game mode to the selected one
+
     score = 0;
     attempt = 0;
     selectedCards = [];
-    gameMode = selectedMode ? selectedMode.value : 'hard'; // Set the game mode, default to hard
-
+    isStudying = false; // Reset study flag
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
@@ -134,8 +139,15 @@ function startGame() {
         return;
     }
 
-    loadWordPairsFromChapter(chapter);
+    // Reload word pairs if the mode changed to ensure a fresh start
+    if (modeChanged || wordPairs.length === 0) {
+        loadWordPairsFromChapter(chapter);
+    } else {
+        // If the mode hasn't changed, just reset the game board
+        createCards(); // Recreate the cards without reloading the chapter
+    }
 }
+
 
 function getStudyDuration() {
     const durationInput = document.getElementById('study-duration').value;
