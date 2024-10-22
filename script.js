@@ -380,15 +380,17 @@ function PracticePicture() {
         // Display only the Korean word and make it clickable
         practiceItem.innerHTML = `<strong style="cursor: pointer;">${pair.korean}</strong>`;
 
-        // Add click event to perform a Google Image search for the Korean word
+        //  Add a click event for playing the sound 
         practiceItem.addEventListener('click', () => {
+            playSound(course, chapter, pair.soundFile);
+        });click
+        
+        // Optionally, add a click event to perform a Google Image search for the Korean word (if needed)
+        practiceItem.addEventListener('dblclick', () => {
             googleImageSearch(pair.korean);
         });
 
-        // Optionally, add a click event for playing the sound (if needed)
-        practiceItem.addEventListener('dblclick', () => {
-            playSound(course, chapter, pair.soundFile);
-        });
+
 
         // Append the practice item to the list
         practiceList.appendChild(practiceItem);
