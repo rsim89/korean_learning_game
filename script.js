@@ -42,7 +42,11 @@ function loadWordPairsFromChapter(chapter) {
             }
 
             shuffle(wordPairs);
-            createCards(); // Create cards with the selected word pairs
+            if (gameMode === 'practice') {
+                startPracticeMode();
+            } else {
+                createCards(); // Create cards with the selected word pairs for game mode
+            }
         })
         .catch(error => {
             console.error('Error loading the file:', error);
@@ -60,7 +64,6 @@ function createCards() {
     englishContainer.innerHTML = '';
     koreanContainer.innerHTML = '';
 
-    // Limit to 10 pairs for the game
     const gamePairs = wordPairs.slice(0, 10);
     
     displayKorean = gamePairs.map(pair => pair.korean);
@@ -71,7 +74,7 @@ function createCards() {
     displayEnglish.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = word; // Show the actual word initially
+        card.innerText = word;
         card.dataset.index = index;
         card.dataset.language = 'english';
         card.dataset.word = word;
@@ -82,7 +85,7 @@ function createCards() {
     displayKorean.forEach((word, index) => {
         const card = document.createElement('div');
         card.className = 'card';
-        card.innerText = word; // Show the actual word initially
+        card.innerText = word;
         card.dataset.index = index;
         card.dataset.language = 'korean';
         card.dataset.word = word;
@@ -97,12 +100,12 @@ function createCards() {
     });
 
     if (gameMode === 'hard') {
-        isStudying = true; // Prevent interaction during the study period
-        const studyDuration = getStudyDuration(); // Get the study duration in seconds
-        startCountdown(studyDuration); // Start the countdown
+        isStudying = true;
+        const studyDuration = getStudyDuration();
+        startCountdown(studyDuration);
         setTimeout(() => {
-            flipAllCardsBack(); // Flip cards back after the study period
-            isStudying = false; // Allow interaction after the study period
+            flipAllCardsBack();
+            isStudying = false;
         }, studyDuration * 1000);
     }
 }
@@ -111,27 +114,25 @@ function flipAllCardsBack() {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
         card.classList.remove('revealed');
-        card.innerText = '[CARD]'; // Flip the card back to the original state
+        card.innerText = '[CARD]';
     });
-    isStudying = false; // Allow interaction after flipping the cards back
+    isStudying = false;
 }
 
 function startMatchingGame() {
     const chapter = document.getElementById('chapter').value;
-    const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get selected mode
+    const selectedMode = document.querySelector('input[name="mode"]:checked');
 
-    if (!selectedMode || selectedMode.value === 'practice') {
-        alert('Please select a valid game mode (Easy/Hard).');
+    if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
+        alert('Please select a valid game mode (Easy, Hard, or Practice).');
         return;
     }
 
-    // Get the selected mode value
     gameMode = selectedMode.value;
-
     score = 0;
     attempt = 0;
     selectedCards = [];
-    isStudying = false; // Reset study flag
+    isStudying = false;
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
     document.getElementById('reset-button').style.display = 'none';
@@ -141,44 +142,31 @@ function startMatchingGame() {
         return;
     }
 
-    // Reload word pairs if the mode changed to ensure a fresh start
-    if (typeof modeChanged !== 'undefined' && modeChanged || wordPairs.length === 0) {
-        loadWordPairsFromChapter(chapter);
-    } else {
-        // If the mode hasn't changed, just reset the game board
-        createCards(); // Recreate the cards without reloading the chapter
-    }
+    loadWordPairsFromChapter(chapter);
 }
 
 function getStudyDuration() {
     const durationInput = document.getElementById('study-duration').value;
     let duration = parseInt(durationInput, 10);
-    
-    // Ensure the duration is between 1 and 60 seconds
     if (isNaN(duration) || duration < 1) {
-        duration = 1; // Minimum of 1 second
+        duration = 1;
     } else if (duration > 60) {
-        duration = 60; // Maximum of 60 seconds
+        duration = 60;
     }
-
     return duration;
 }
 
 function selectCard(card) {
-    if (isStudying) return; // Prevent selecting cards during the study period
+    if (isStudying) return;
     if (selectedCards.length < 2 && !card.classList.contains('revealed')) {
         card.classList.add('revealed');
-
         if (gameMode === 'hard') {
             card.innerText = card.dataset.word;
         }
-
         selectedCards.push(card);
-
         if (card.dataset.language === 'korean') {
             playSound(card.dataset.soundFile);
         }
-
         if (selectedCards.length === 2) {
             setTimeout(checkMatch, 1000);
         }
@@ -227,7 +215,6 @@ function checkMatch() {
                 confirmButtonText: 'OK'
             });
 
-            // For hard mode, flip the cards back to [CARD]
             if (gameMode === 'hard') {
                 firstCard.classList.remove('revealed');
                 firstCard.innerText = '[CARD]';
@@ -235,19 +222,18 @@ function checkMatch() {
                 secondCard.innerText = '[CARD]';
             }
 
-            // For easy mode, flip the cards back but show the actual words
             if (gameMode === 'easy') {
                 firstCard.classList.remove('revealed');
-                firstCard.innerText = firstCard.dataset.word; // Show the actual word
+                firstCard.innerText = firstCard.dataset.word;
                 secondCard.classList.remove('revealed');
-                secondCard.innerText = secondCard.dataset.word; // Show the actual word
+                secondCard.innerText = secondCard.dataset.word;
             }
 
             document.getElementById('message').innerText = 'Try again!';
         }, 1000);
     }
 
-    selectedCards = []; // Clear selected cards for the next round
+    selectedCards = [];
     attempt += 1;
 
     if (attempt >= maxAttempts && document.querySelectorAll('.matched').length < wordPairs.length * 2) {
@@ -261,7 +247,7 @@ function startCountdown(duration) {
     const countdownElement = document.getElementById('countdown-timer');
 
     countdownElement.innerText = `Time left: ${remainingTime} sec`;
-    countdownElement.style.display = 'block'; // Make sure the timer is visible
+    countdownElement.style.display = 'block';
 
     const countdownInterval = setInterval(() => {
         remainingTime -= 1;
@@ -269,92 +255,27 @@ function startCountdown(duration) {
 
         if (remainingTime <= 0) {
             clearInterval(countdownInterval);
-            countdownElement.style.display = 'none'; // Hide the timer when done
+            countdownElement.style.display = 'none';
         }
     }, 1000);
 }
 
-document.getElementById('start-button').addEventListener('click', () => {
-    // Fetch the latest mode and chapter
-    const selectedMode = document.querySelector('input[name="mode"]:checked');
-    const chapter = document.getElementById('chapter').value;
-
-    // Validate the selected mode
-    if (!selectedMode || !['easy', 'hard', 'practice'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy, Hard, or Practice).');
-        return;
-    }
-
-    // Validate the selected chapter
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    // Update the gameMode with the selected mode value
-    gameMode = selectedMode.value;
-
-    // Reset the game state
-    score = 0;
-    attempt = 0;
-    selectedCards = [];
-    isStudying = false; // Reset study flag
-
-    // Update UI elements
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-    document.getElementById('reset-button').style.display = 'none';
-
-    // Show the game board and hide the practice list
-    document.querySelector('.game-board').style.display = 'block';
-    document.getElementById('practice-list').style.display = 'none';
-
-    // Start the appropriate mode based on the selection
-    if (gameMode === 'practice') {
-        startPracticeMode();
-    } else {
-        // Reload word pairs if the chapter or mode changed, to ensure a fresh start
-        loadWordPairsFromChapter(chapter);
-    }
-});
-
-
+document.getElementById('start-button').addEventListener('click', startMatchingGame);
 document.getElementById('reset-button').addEventListener('click', startMatchingGame);
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
 
 function startPracticeMode() {
-    const selectedMode = document.querySelector('input[name="mode"]:checked').value;
-
-    // Double-check if the selected mode is "practice"
-    if (selectedMode !== 'practice') {
-        alert('Practice mode is not selected. Please select "Practice" mode to start.');
-        return;
-    }
-
-    const chapter = document.getElementById('chapter').value;
-
-    if (!chapter) {
-        alert('Please select a chapter.');
-        return;
-    }
-
-    if (wordPairs.length === 0) {
-        // Load word pairs if they haven't been loaded yet
-        loadWordPairsFromChapter(chapter);
-    }
-
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
-    practiceList.style.display = 'block'; // Show the practice list
-    document.querySelector('.game-board').style.display = 'none'; // Hide the game board
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
 
-    // List all word pairs for practice mode
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong>  <strong>${pair.korean}</strong>`;
+        practiceItem.innerHTML = `<strong>${pair.english}</strong> <strong>${pair.korean}</strong>`;
         practiceItem.addEventListener('click', () => {
             playSound(pair.soundFile);
         });
