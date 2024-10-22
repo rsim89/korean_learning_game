@@ -91,7 +91,6 @@ h1 {
     background-color: #0056b3;
 }
 
-
 .practice-list {
     margin-top: 20px;
     font-size: 18px;
@@ -101,7 +100,6 @@ h1 {
     align-items: center;
     justify-content: center; /* Center items vertically */
 }
-
 
 .practice-item {
     display: flex;
