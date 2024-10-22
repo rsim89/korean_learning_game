@@ -116,6 +116,7 @@ function flipAllCardsBack() {
     isStudying = false; // Allow interaction after flipping the cards back
 }
 
+
 function startGame() {
     const chapter = document.getElementById('chapter').value;
     const selectedMode = document.querySelector('input[name="mode"]:checked'); // Get selected mode
@@ -139,6 +140,12 @@ function startGame() {
         return;
     }
 
+    // If "practice" mode is selected, show the practice section
+    if (gameMode === 'practice') {
+        showPracticeMode();
+        return;
+    }
+
     // Reload word pairs if the mode changed to ensure a fresh start
     if (modeChanged || wordPairs.length === 0) {
         loadWordPairsFromChapter(chapter);
@@ -147,6 +154,7 @@ function startGame() {
         createCards(); // Recreate the cards without reloading the chapter
     }
 }
+
 
 
 function getStudyDuration() {
