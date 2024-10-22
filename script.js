@@ -383,14 +383,12 @@ function PracticePicture() {
         //  Add a click event for playing the sound 
         practiceItem.addEventListener('click', () => {
             playSound(course, chapter, pair.soundFile);
-        });click
+        });
         
         // Optionally, add a click event to perform a Google Image search for the Korean word (if needed)
         practiceItem.addEventListener('dblclick', () => {
             googleImageSearch(pair.korean);
         });
-
-
 
         // Append the practice item to the list
         practiceList.appendChild(practiceItem);
