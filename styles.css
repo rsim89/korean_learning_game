@@ -11,6 +11,8 @@ body {
     background-color: #fff;
     border-radius: 8px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    min-height: 400px; /* Default minimum height */
+    transition: height 0.3s ease;
 }
 
 h1 {
@@ -33,6 +35,8 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    max-height: 500px; /* Maximum height for cards in game mode */
+    overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
 .card {
@@ -99,7 +103,9 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center; /* Center items vertically */
+    justify-content: center;
+    max-height: 700px; /* Maximum height for practice mode */
+    overflow-y: auto; /* Allow scrolling if content overflows */
 }
 
 .practice-item {
