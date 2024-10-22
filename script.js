@@ -257,7 +257,23 @@ function checkMatch() {
     selectedCards = [];
     attempt += 1;
 
-    if (attempt >= maxAttempts && document.querySelectorAll('.matched').length < wordPairs.length * 2) {
+    // Check if all pairs are matched
+    const totalMatchedCards = document.querySelectorAll('.matched').length;
+    const totalCards = wordPairs.length * 2;
+    if (totalMatchedCards === totalCards) {
+        // All pairs matched successfully
+        Swal.fire({
+            icon: 'success',
+            title: 'Perfect!',
+            text: 'You matched all pairs correctly! 🎉',
+            confirmButtonText: 'Restart'
+        }).then(() => {
+            startMatchingGame(); // Restart the game when the user clicks "Restart"
+        });
+        document.getElementById('message').innerText = 'Perfect!';
+        document.getElementById('reset-button').style.display = 'block';
+    } else if (attempt >= maxAttempts) {
+        // Game over condition if maximum attempts reached without matching all pairs
         document.getElementById('message').innerText = 'Game Over!';
         document.getElementById('reset-button').style.display = 'block';
     }
