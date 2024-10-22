@@ -5,21 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korean-English Matching Game</title>
     <link rel="stylesheet" href="styles.css">
-    <!-- Include SheetJS library for reading Excel files -->
+
+    <!-- External Libraries -->
+    <!-- SheetJS library for reading Excel files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.0/xlsx.full.min.js"></script>
-    <!-- Include SweetAlert2 library -->
+    <!-- SweetAlert2 library for alerts -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
     <div class="container">
         <h1>Korean-English Matching Game</h1>
+        
+        <!-- Game Settings -->
         <div id="settings">
-                            <label for="course">Select Course:</label>
+            <div>
+                <label for="course">Select Course:</label>
                 <select id="course">
                     <option value="KORE121">KORE121</option>
                     <option value="KORE122">KORE122</option>
                 </select>
-                
+            </div>
+
+            <div>
                 <label for="chapter">Select Chapter:</label>
                 <select id="chapter">
                     <option value="ch1">Chapter 1</option>
@@ -32,40 +39,58 @@
                     <option value="ch8">Chapter 8</option>
                     <option value="ch9">Chapter 9</option>
                 </select>
-            
+            </div>
+
+            <div>
                 <label for="part">Select Part:</label>
                 <select id="part">
                     <option value="1">Part 1</option>
                     <option value="2">Part 2</option>
                 </select>
+            </div>
+
             <div>
                 <label>Select Mode:</label>
                 <input type="radio" name="mode" value="easy" id="easy-mode"> Easy
                 <input type="radio" name="mode" value="hard" id="hard-mode" checked> Hard
                 <input type="radio" name="mode" value="practice" id="practice-mode"> Practice
             </div>
-                <img id="mute-button" src="images/unmute.svg" onclick="toggleMute()" style="cursor: pointer; width: 30px; height: 30px;">
+
+            <div>
+                <img id="mute-button" src="images/unmute.svg" onclick="toggleMute()" 
+                     style="cursor: pointer; width: 30px; height: 30px;">
+            </div>
+
             <div>
                 <label for="study-duration">Study Duration (seconds):</label>
                 <input type="number" id="study-duration" value="15" min="1">
             </div>
-            <button id="start-button">Start Game</button>
-            <button id="refresh-button">Reset</button> <!-- New Reset Button -->
+
+            <div>
+                <button id="start-button">Start Game</button>
+                <button id="refresh-button">Reset</button>
+            </div>
         </div>
 
-      
-
+        <!-- Game Board -->
         <div class="game-board">
             <div id="english-cards" class="cards"></div>
             <div id="korean-cards" class="cards"></div>
         </div>
-        <div id="practice-list" class="practice-list" style="display: none;"></div> <!-- Practice List Section -->
+
+        <!-- Practice List -->
+        <div id="practice-list" class="practice-list" style="display: none;"></div>
+
+        <!-- Timer, Score, and Message -->
         <div id="countdown-timer" class="timer" style="display: none;"></div>
         <div id="score" class="score" style="display: none;"></div>
         <div id="message"></div>
+
+        <!-- Restart Button -->
         <button id="reset-button" style="display: none;">Restart Game</button>
     </div>
 
+    <!-- External JavaScript -->
     <script src="script.js"></script>
 </body>
 </html>
