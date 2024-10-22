@@ -156,7 +156,7 @@ function selectCard(card) {
     }
 }
 
-function playSound(soundFile) {
+function playSound(course, chapter, soundFile) {
     const audioPath = `https://rsim89.github.io/korean_words/audiofiles/${course}/${chapter}/${soundFile}`;
     const audio = new Audio(audioPath);
     audio.play().catch(error => {
