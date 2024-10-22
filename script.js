@@ -384,11 +384,6 @@ function PracticePicture() {
         wordColumn.style.flex = '1';
         wordColumn.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
 
-        // Play sound when the Korean word is clicked
-        wordColumn.addEventListener('click', () => {
-            playSound(course, chapter, pair.soundFile);
-        });
-
         // Create a container for the input elements
         const inputColumn = document.createElement('div');
         inputColumn.className = 'input-column';
@@ -407,8 +402,10 @@ function PracticePicture() {
 
         // Add click event to the check button to verify the answer using Swal.fire and play feedback sound
         checkButton.addEventListener('click', () => {
-            if (inputField.value.trim().toLowerCase() === pair.english.toLowerCase()) {
-                playFeedbackSound(true); // Play the correct feedback sound
+            const isCorrect = inputField.value.trim().toLowerCase() === pair.english.toLowerCase();
+            playFeedbackSound(isCorrect); // Play feedback sound based on correctness
+
+            if (isCorrect) {
                 Swal.fire({
                     icon: 'success',
                     title: 'Correct!',
@@ -416,7 +413,6 @@ function PracticePicture() {
                     confirmButtonText: 'OK'
                 });
             } else {
-                playFeedbackSound(false); // Play the incorrect feedback sound
                 Swal.fire({
                     icon: 'error',
                     title: 'Incorrect',
@@ -424,6 +420,25 @@ function PracticePicture() {
                     confirmButtonText: 'Try Again'
                 });
             }
+        });
+
+        // Create a container for the icons (audio and search)
+        const iconColumn = document.createElement('div');
+        iconColumn.className = 'icon-column';
+        iconColumn.style.display = 'flex';
+        iconColumn.style.flex = '0 0 auto';
+
+        // Create an SVG icon for the audio
+        const audioIcon = document.createElement('img');
+        audioIcon.src = `${BASE_URL}images/audio.svg`; // Make sure the path is correct
+        audioIcon.style.cursor = 'pointer';
+        audioIcon.style.width = '20px';
+        audioIcon.style.height = '20px';
+        audioIcon.style.marginRight = '5px';
+
+        // Add click event to the audio icon to play the Korean word sound
+        audioIcon.addEventListener('click', () => {
+            playSound(course, chapter, pair.soundFile);
         });
 
         // Create an SVG icon for the Google Image search
@@ -439,12 +454,16 @@ function PracticePicture() {
             googleImageSearch(pair.korean);
         });
 
+        // Append audio and search icons to the icon column
+        iconColumn.appendChild(audioIcon);
+        iconColumn.appendChild(searchIcon);
+
         // Append input elements to the input column
         inputColumn.appendChild(inputField);
         inputColumn.appendChild(checkButton);
-        inputColumn.appendChild(searchIcon);
 
-        // Append the word column and input column to the practice item
+        // Append the icon column, word column, and input column to the practice item
+        practiceItem.appendChild(iconColumn);
         practiceItem.appendChild(wordColumn);
         practiceItem.appendChild(inputColumn);
 
@@ -452,7 +471,6 @@ function PracticePicture() {
         practiceList.appendChild(practiceItem);
     });
 }
-
 
 
 
