@@ -361,7 +361,6 @@ function startCountdown(duration) {
             content: 'custom-swal-content', // Add a custom class to the content (text)
             confirmButton: 'custom-swal-button' // Add a custom class to the button
         }
-    }
     }).then(() => {
         // Start the countdown after the user clicks OK
         let timeRemaining = duration;
