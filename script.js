@@ -11,7 +11,7 @@ let isMuted = false;
 let flipTimeout; // Variable to hold the timeout ID for flipping the cards back
 let countdownInterval; // Store the interval ID globally
 
-const BASE_URL = 'https://rsim89.github.io/korean_words/';
+const BASE_URL = 'https://rsim89.github.io/korean_learning_game/';
 
 function googleImageSearch(query) {
     const googleImageSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`;
