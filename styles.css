@@ -184,20 +184,21 @@ h1 {
 
 /* swal Styles */
 .custom-swal-popup {
-    text-align: center; /* Center all text inside the popup */
+    text-align: center; /* Center all content inside the popup */
 }
 
 .custom-swal-title {
-    margin-bottom: 10px; /* Optional: Adjust spacing around the title */
+    text-align: center; /* Center the title text */
 }
 
 .custom-swal-content {
-    margin-bottom: 20px; /* Optional: Adjust spacing between the text and button */
+    text-align: center; /* Center the content text */
 }
 
 .custom-swal-button {
-    display: inline-block;
-    margin: 0 auto; /* Center the button */
+    text-align: center; /* Center the text within the button */
+    display: block;     /* Make the button behave like a block element */
+    margin: 0 auto;     /* Center the button itself */
 }
 
 /* Responsive Styles for Mobile Devices */
@@ -244,7 +245,6 @@ h1 {
         width: 100%;
     }
 
-    /* Mobile Adjustments for Swal */
     .custom-swal-popup {
         width: 90%; /* Make popup smaller on mobile */
         font-size: 14px; /* Adjust font size for readability */
