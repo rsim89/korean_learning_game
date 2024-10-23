@@ -346,12 +346,11 @@ function startCountdown(duration) {
         allowOutsideClick: false,
     }).then(() => {
         // Start the countdown after the user clicks OK
-        let startTime = Date.now();
-        let endTime = startTime + duration * 1000;
+        let timeRemaining = duration;
 
         Swal.fire({
             title: 'The Countdown is On!',
-            html: `Keep going! You have <strong style="color: red;">${(duration).toFixed(3)}</strong> seconds left before the cards will be hidden.`,
+            html: `Keep going! You have <strong style="color: red;">${timeRemaining.toFixed(3)}</strong> seconds left before the cards will be hidden.`,
             position: 'top', // Position the popup at the top center
             toast: true, // Make it look like a non-blocking toast notification
             timer: duration * 1000,
@@ -362,8 +361,7 @@ function startCountdown(duration) {
                 Swal.showLoading(); // Show loading animation
 
                 countdownInterval = setInterval(() => {
-                    let currentTime = Date.now();
-                    let timeRemaining = (endTime - currentTime) / 1000;
+                    timeRemaining -= 0.01; // Decrease by 0.01 for 10ms precision
 
                     if (timeRemaining < 0) {
                         timeRemaining = 0;
@@ -376,10 +374,9 @@ function startCountdown(duration) {
             willClose: () => {
                 clearInterval(countdownInterval);
             }
-        });     
+        });
+    });
 }
-
-
 
 
 function startPracticeMode() {
