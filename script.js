@@ -492,18 +492,19 @@ function adjustLayoutForMode() {
     const gameBoard = document.querySelector('.game-board');
     const practiceList = document.getElementById('practice-list');
 
-    if (gameMode === 'practice') {
-        // Adjust layout for practice mode
-        container.style.minHeight = '600px'; // Increase the minimum height for practice mode
+    if (gameMode === 'practice' || gameMode === 'picture') {
+        // Adjust layout for both practice and picture modes
+        container.style.minHeight = '600px'; // Increase the minimum height
         gameBoard.style.display = 'none'; // Hide the game board
         practiceList.style.display = 'block'; // Show the practice list
     } else {
-        // Adjust layout for game mode
-        container.style.minHeight = '400px'; // Set the minimum height for game mode
+        // Adjust layout for other game modes
+        container.style.minHeight = '400px'; // Set the minimum height
         gameBoard.style.display = 'flex'; // Show the game board
         practiceList.style.display = 'none'; // Hide the practice list
     }
 }
+
 
 // Function to stop all currently playing sounds
 function stopAllSounds() {
