@@ -349,7 +349,7 @@ function resetGame() {
 function startCountdown(duration) {
     Swal.fire({
         title: 'Get Ready!',
-        text: `The cards will be hidden after ${duration} seconds. Click OK to start the countdown.`,
+        html: `The cards will be hidden after <span style="color: red;">${duration}</span> seconds.<br>Click OK to start the countdown.`,
         position: 'top', // Position the popup at the top center
         toast: false, // Make it look like a non-blocking popup
         showConfirmButton: true, // Show the confirmation button
