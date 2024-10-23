@@ -1,9 +1,11 @@
+/* General Styles */
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
     text-align: center;
 }
 
+/* Container Styles */
 .container {
     max-width: 800px;
     margin: 0 auto;
@@ -15,21 +17,25 @@ body {
     transition: height 0.3s ease;
 }
 
+/* Header Styles */
 h1 {
     font-size: 24px;
     margin-bottom: 20px;
 }
 
+/* Settings Section */
 #settings {
     margin-bottom: 20px;
 }
 
+/* Game Board Styles */
 .game-board {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
 }
 
+/* Card Styles */
 .cards {
     width: 45%;
     display: flex;
@@ -66,6 +72,7 @@ h1 {
     background-color: #ffc107;
 }
 
+/* Score and Message Styles */
 #score {
     margin-top: 20px;
     font-size: 18px;
@@ -79,6 +86,7 @@ h1 {
     font-weight: bold;
 }
 
+/* Reset Button Styles */
 #reset-button {
     margin: 20px auto;
     padding: 10px 20px;
@@ -94,7 +102,7 @@ h1 {
     background-color: #0056b3;
 }
 
-
+/* Practice List and Item Styles */
 .practice-list {
     margin-top: 20px;
     font-size: 18px;
@@ -113,11 +121,61 @@ h1 {
     padding: 10px;
     background-color: #f9f9f9;
     border-radius: 8px;
-    margin: 5px auto; /* Centering the item horizontally */
+    margin: 5px auto 15px; /* Centering the item horizontally and adding bottom margin */
     box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 }
 
-
 .practice-item:hover {
     background-color: #e9e9e9;
+}
+
+/* Word Column Styles */
+.word-column {
+    flex: 1;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+/* Input Column Styles */
+.input-column {
+    flex: 2;
+    display: flex;
+    align-items: center;
+}
+
+/* Input Field Styles */
+.input-column input {
+    margin-right: 10px;
+    padding: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Icon Column and Icon Styles */
+.icon-column {
+    display: flex;
+    align-items: center;
+    flex: 0 0 auto;
+    margin-right: 50px; /* Increased space between icons and Korean word */
+}
+
+.icon-column img {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+}
+
+/* Specific Style for Search Icon */
+.icon-column img.search-icon {
+    margin-left: 5px;
+}
+
+/* Check Icon Styles */
+.input-column img.check-icon {
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
 }
