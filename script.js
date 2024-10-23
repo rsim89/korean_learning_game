@@ -219,6 +219,16 @@ function createCards() {
 
     // If in Hard mode, start the study period before the game begins
     if (gameMode === 'hard') {
+        // Clear any existing countdown interval and timeout to avoid overlap
+        if (countdownInterval) {
+            clearInterval(countdownInterval);
+            countdownInterval = null;
+        }
+        if (flipTimeout) {
+            clearTimeout(flipTimeout);
+            flipTimeout = null;
+        }
+
         isStudying = true;
         const studyDuration = getStudyDuration();
         startCountdown(studyDuration);
@@ -233,8 +243,9 @@ function createCards() {
             clearTimeout(flipTimeout);
             flipTimeout = null;
         }
+    }
 }
-}
+
 
 function checkMatch() {
     const [firstCard, secondCard] = selectedCards;
@@ -527,11 +538,13 @@ function stopAllSounds() {
 }
 
 
-// Updated event listener for 'start-button'
 document.getElementById('start-button').addEventListener('click', () => {
     // Stop any ongoing audio playback
     stopAllSounds();
-    
+
+    // Close any active Swal pop-ups immediately
+    Swal.close();
+
     // Clear any existing timeouts and intervals
     if (flipTimeout) {
         clearTimeout(flipTimeout);
@@ -541,7 +554,7 @@ document.getElementById('start-button').addEventListener('click', () => {
         clearInterval(countdownInterval);
         countdownInterval = null;
     }
-    
+
     // Immediately stop the card flipping process if flipAllCardsBack() was in progress
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
@@ -561,7 +574,7 @@ document.getElementById('start-button').addEventListener('click', () => {
         alert('Please make sure to fill in all required fields: Course, Chapter, and Part.');
         return;
     }
-    
+
     // Update the gameMode with the selected mode value
     gameMode = selectedMode.value;
 
@@ -570,7 +583,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     attempt = 0;
     selectedCards = [];
     isStudying = false; // Reset study flag
-    
+
     // Reset countdown and study duration
     resetCountdown();
     const studyDuration = getStudyDuration();
@@ -585,7 +598,7 @@ document.getElementById('start-button').addEventListener('click', () => {
 
     // Load the word pairs for the selected chapter
     loadWordPairsFromChapter(course, chapter, part);
-    
+
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
 
