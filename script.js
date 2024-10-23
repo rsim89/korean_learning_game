@@ -505,7 +505,38 @@ function adjustLayoutForMode() {
     }
 }
 
+// Function to stop all currently playing sounds
+function stopAllSounds() {
+    const audios = document.querySelectorAll('audio');
+    audios.forEach(audio => {
+        audio.pause();
+        audio.currentTime = 0; // Reset audio to the beginning
+    });
+}
+
+// Updated event listener for 'start-button'
 document.getElementById('start-button').addEventListener('click', () => {
+    // Stop any ongoing audio playback
+    stopAllSounds();
+    
+    // Clear any existing timeouts and intervals
+    if (flipTimeout) {
+        clearTimeout(flipTimeout);
+        flipTimeout = null;
+    }
+    if (countdownInterval) {
+        clearInterval(countdownInterval);
+        countdownInterval = null;
+    }
+    
+    // Immediately stop the card flipping process if flipAllCardsBack() was in progress
+    const allCards = document.querySelectorAll('.card');
+    allCards.forEach(card => {
+        card.classList.remove('revealed'); // Make sure all cards are unflipped
+        card.innerText = '[CARD]';
+    });
+    isStudying = false; // Reset the studying state
+
     // Fetch the latest mode and chapter
     const selectedMode = document.querySelector('input[name="mode"]:checked');
     const course = document.getElementById('course').value;
@@ -550,10 +581,12 @@ document.getElementById('start-button').addEventListener('click', () => {
     document.querySelector('.game-board').style.display = 'block';
     document.getElementById('practice-list').style.display = 'none';
 
+    // Load the word pairs for the selected chapter
     loadWordPairsFromChapter(course, chapter, part);
     
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
+
 
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
