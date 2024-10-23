@@ -348,9 +348,9 @@ function resetGame() {
 
 function startCountdown(duration) {
     Swal.fire({
-        const studyDuration = getStudyDuration();
+        const durationInput = document.getElementById('study-duration');
         title: 'Get Ready!',
-        text: `The cards will be hidden after ${studyDuration} seconds. Click OK to start the countdown.`,
+        text: `The cards will be hidden after ${durationInput} seconds. Click OK to start the countdown.`,
         position: 'top', // Position the popup at the top center
         toast: false, // Make it look like a non-blocking popup
         showConfirmButton: true, // Show the confirmation button
