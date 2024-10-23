@@ -33,6 +33,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     margin-top: 20px;
+    flex-wrap: wrap;
 }
 
 /* Card Styles */
@@ -178,4 +179,49 @@ h1 {
     width: 20px;
     height: 20px;
     margin-right: 5px;
+}
+
+/* Responsive Styles for Mobile Devices */
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+
+    .game-board {
+        flex-direction: column;
+    }
+
+    .cards {
+        width: 100%;
+    }
+
+    .card {
+        width: 90%;
+        font-size: 16px;
+    }
+
+    .practice-item {
+        width: 100%;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .word-column, .input-column, .icon-column {
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .input-column {
+        margin-top: 10px;
+    }
+
+    .icon-column {
+        justify-content: flex-start;
+        margin-top: 10px;
+        margin-right: 0;
+    }
+
+    #reset-button {
+        width: 100%;
+    }
 }
