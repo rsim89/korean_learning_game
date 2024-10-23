@@ -5,7 +5,7 @@ let maxAttempts = 15;
 let selectedCards = [];
 let displayKorean = [];
 let displayEnglish = [];
-let gameMode = 'hard'; // Default to hard mode
+let gameMode = 'easy'; // Default to easy mode
 let isStudying = false; // Flag to track if the study period is active
 let isMuted = false;
 let flipTimeout; // Variable to hold the timeout ID for flipping the cards back
@@ -217,22 +217,24 @@ function createCards() {
         koreanContainer.appendChild(card);
     });
 
-    // Clear any existing timeout to avoid overlap
-    clearTimeout(flipTimeout);
-
     // If in Hard mode, start the study period before the game begins
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
-
+    
         startCountdown(studyDuration);
-
+    
         // Set a new timeout to flip the cards back after the study duration
         flipTimeout = setTimeout(() => {
-            flipAllCardsBack();
-            isStudying = false;
+            flipAllCardsBack(); // This function will be executed when flipTimeout finishes
         }, studyDuration * 1000);
-    }
+    } else {
+        // If in Easy mode, clear any existing timeout
+        if (flipTimeout) {
+            clearTimeout(flipTimeout);
+            flipTimeout = null;
+        }
+}
 }
 
 function checkMatch() {
