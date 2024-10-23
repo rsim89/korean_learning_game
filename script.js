@@ -600,7 +600,6 @@ document.getElementById('start-button').addEventListener('click', () => {
     adjustLayoutForMode(); // Adjust the layout based on the selected mode
 });
 
-
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
