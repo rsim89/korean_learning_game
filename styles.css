@@ -182,6 +182,24 @@ h1 {
     margin-right: 0; /* Remove or set margin to 0 */
 }
 
+/* swal Styles */
+.custom-swal-popup {
+    text-align: center; /* Center all text inside the popup */
+}
+
+.custom-swal-title {
+    margin-bottom: 10px; /* Optional: Adjust spacing around the title */
+}
+
+.custom-swal-content {
+    margin-bottom: 20px; /* Optional: Adjust spacing between the text and button */
+}
+
+.custom-swal-button {
+    display: inline-block;
+    margin: 0 auto; /* Center the button */
+}
+
 /* Responsive Styles for Mobile Devices */
 @media (max-width: 768px) {
     .container {
@@ -224,5 +242,27 @@ h1 {
 
     #reset-button {
         width: 100%;
+    }
+
+    /* Mobile Adjustments for Swal */
+    .custom-swal-popup {
+        width: 90%; /* Make popup smaller on mobile */
+        font-size: 14px; /* Adjust font size for readability */
+        padding: 20px; /* Adjust padding */
+    }
+
+    .custom-swal-title {
+        font-size: 18px; /* Adjust title font size */
+        margin-bottom: 8px; /* Adjust margin */
+    }
+
+    .custom-swal-content {
+        font-size: 14px; /* Adjust content font size */
+        margin-bottom: 15px; /* Adjust spacing */
+    }
+
+    .custom-swal-button {
+        width: 100%; /* Make button full width */
+        font-size: 16px; /* Adjust button font size */
     }
 }
