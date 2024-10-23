@@ -142,6 +142,7 @@ h1 {
     flex: 2;
     display: flex;
     align-items: center;
+    justify-content: flex-end; /* Aligns the content to the end of the column */
 }
 
 /* Input Field Styles */
@@ -178,7 +179,7 @@ h1 {
     cursor: pointer;
     width: 20px;
     height: 20px;
-    margin-right: 5px;
+    margin-right: 0; /* Remove or set margin to 0 */
 }
 
 /* Responsive Styles for Mobile Devices */
