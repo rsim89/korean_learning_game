@@ -189,17 +189,20 @@ h1 {
 
 .custom-swal-title {
     text-align: center; /* Center the title text */
+    width: 100%; /* Ensure full width for proper centering */
 }
 
 .custom-swal-content {
     text-align: center; /* Center the content text */
+    width: 100%; /* Ensure full width for proper centering */
 }
 
 .custom-swal-button {
     text-align: center; /* Center the text within the button */
-    display: block;     /* Make the button behave like a block element */
-    margin: 0 auto;     /* Center the button itself */
+    display: inline-block; /* Use inline-block for better alignment */
+    margin: 0 auto; /* Center the button within the popup */
 }
+
 
 /* Responsive Styles for Mobile Devices */
 @media (max-width: 768px) {
