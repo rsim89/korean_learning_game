@@ -374,6 +374,7 @@ function startPracticeMode() {
     });
 }
 
+
 function PracticePicture() {
     const practiceList = document.getElementById('practice-list');
     practiceList.innerHTML = '';
@@ -386,33 +387,28 @@ function PracticePicture() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.style.display = 'flex';
-        practiceItem.style.justifyContent = 'space-between';
 
         // Create a container for the Korean word
         const wordColumn = document.createElement('div');
         wordColumn.className = 'word-column';
-        wordColumn.style.flex = '1';
-        wordColumn.innerHTML = `<strong style="margin-right: 10px;">${pair.korean}</strong>`;
+        wordColumn.innerHTML = `<strong>${pair.korean}</strong>`;
 
         // Create a container for the input elements
         const inputColumn = document.createElement('div');
         inputColumn.className = 'input-column';
-        inputColumn.style.flex = '2';
 
         // Create an input field for typing the English word
         const inputField = document.createElement('input');
         inputField.type = 'text';
         inputField.placeholder = 'Type English word';
-        inputField.style.marginRight = '10px';
 
-        // Create a button to check the answer
-        const checkButton = document.createElement('button');
-        checkButton.innerText = 'Check';
-        checkButton.style.marginRight = '5px';
+        // Create an SVG icon for the "Check" action
+        const checkIcon = document.createElement('img');
+        checkIcon.src = `${BASE_URL}images/check.svg`; // Make sure the path to the SVG is correct
+        checkIcon.classList.add('check-icon');
 
-        // Add click event to the check button to verify the answer using Swal.fire and play feedback sound
-        checkButton.addEventListener('click', () => {
+        // Add click event to the check icon to verify the answer
+        checkIcon.addEventListener('click', () => {
             const isCorrect = inputField.value.trim().toLowerCase() === pair.english.toLowerCase();
             playFeedbackSound(isCorrect); // Play feedback sound based on correctness
 
@@ -436,18 +432,11 @@ function PracticePicture() {
         // Create a container for the icons (audio and search)
         const iconColumn = document.createElement('div');
         iconColumn.className = 'icon-column';
-        iconColumn.style.display = 'flex';
-        iconColumn.style.flex = '0 0 auto';
-        iconColumn.style.marginRight = '50px'; // Increased space between icons and Korean word
-
 
         // Create an SVG icon for the audio
         const audioIcon = document.createElement('img');
         audioIcon.src = `${BASE_URL}images/audio.svg`; // Make sure the path is correct
-        audioIcon.style.cursor = 'pointer';
-        audioIcon.style.width = '20px';
-        audioIcon.style.height = '20px';
-        audioIcon.style.marginRight = '5px';
+        audioIcon.classList.add('audio-icon');
 
         // Add click event to the audio icon to play the Korean word sound
         audioIcon.addEventListener('click', () => {
@@ -457,23 +446,20 @@ function PracticePicture() {
         // Create an SVG icon for the Google Image search
         const searchIcon = document.createElement('img');
         searchIcon.src = `${BASE_URL}images/search.svg`; // Make sure the path is correct
-        searchIcon.style.cursor = 'pointer';
-        searchIcon.style.width = '20px';
-        searchIcon.style.height = '20px';
-        searchIcon.style.marginLeft = '5px';
+        searchIcon.classList.add('search-icon');
 
         // Use the global googleImageSearch function
         searchIcon.addEventListener('click', () => {
             googleImageSearch(pair.korean);
         });
 
-        // Append audio and search icons to the icon column
+        // Append audio, search, and check icons to the icon column
         iconColumn.appendChild(audioIcon);
         iconColumn.appendChild(searchIcon);
 
         // Append input elements to the input column
         inputColumn.appendChild(inputField);
-        inputColumn.appendChild(checkButton);
+        inputColumn.appendChild(checkIcon);
 
         // Append the icon column, word column, and input column to the practice item
         practiceItem.appendChild(iconColumn);
