@@ -79,7 +79,7 @@ function flipAllCardsBack() {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
         card.classList.remove('revealed');
-        card.innerText = '[CARD]';
+        card.innerText = '[HIDDEN]';
     });
     isStudying = false;
 }
@@ -274,9 +274,9 @@ function checkMatch() {
 
             if (gameMode === 'hard') {
                 firstCard.classList.remove('revealed');
-                firstCard.innerText = '[CARD]';
+                firstCard.innerText = '[HIDDEN]';
                 secondCard.classList.remove('revealed');
-                secondCard.innerText = '[CARD]';
+                secondCard.innerText = '[HIDDEN]';
             }
 
             if (gameMode === 'easy') {
@@ -339,17 +339,43 @@ function resetGame() {
 function startCountdown(duration) {
     if (gameMode !== 'hard') return; // Only show the countdown for hard mode
 
+    let timeRemaining = duration;
+
+    Swal.fire({
+        title: 'The Countdown is On!',
+        html: `Keep going! You still have <strong>${timeRemaining}</strong> seconds left before the cards will be hidden.`,
+        position: 'top-end', // Position the popup at the top-right corner
+        toast: true, // Make it look like a non-blocking toast notification
+        timer: duration * 1000,
+        timerProgressBar: true,
+        showConfirmButton: false, // Remove the confirmation button
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading(); // Show loading animation
+
+            countdownInterval = setInterval(() => {
+                timeRemaining--;
+                Swal.getHtmlContainer().querySelector('strong').textContent = timeRemaining;
+
+                if (timeRemaining < 0) {
+                    clearInterval(countdownInterval);
+                }
+            }, 1000);
+        },
+        willClose: () => {
+            clearInterval(countdownInterval);
+        }
+    });
+
+    // Optionally, update or show the countdown in a different part of the screen
     const countdownElement = document.getElementById('countdown-timer');
-    countdownElement.style.display = 'block'; // Make sure the countdown is visible
-
-    clearInterval(countdownInterval); // Clear any previous interval
-
+    countdownElement.style.display = 'block';
     countdownInterval = setInterval(() => {
-        countdownElement.innerText = `You have ${duration--} seconds remaining.`;
+        countdownElement.innerText = `Hang in there! ${duration--} seconds left before the cards disappear!`;
 
         if (duration < 0) {
             clearInterval(countdownInterval);
-            countdownElement.style.display = 'none'; // Hide the countdown when finished
+            countdownElement.style.display = 'none';
         }
     }, 1000);
 }
@@ -520,7 +546,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     const allCards = document.querySelectorAll('.card');
     allCards.forEach(card => {
         card.classList.remove('revealed'); // Make sure all cards are unflipped
-        card.innerText = '[CARD]';
+        card.innerText = '[HIDDEN]';
     });
     isStudying = false; // Reset the studying state
 
