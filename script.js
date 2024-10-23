@@ -351,7 +351,7 @@ function startCountdown(duration) {
         title: 'Get Ready!',
         text: 'Click OK to start the countdown.',
         position: 'top', // Position the popup at the top center
-        toast: true, // Make it look like a non-blocking toast notification
+        toast: false, // Make it look like a non-blocking toast notification
         showConfirmButton: true, // Show the confirmation button
         confirmButtonText: 'OK',
         allowOutsideClick: false,
