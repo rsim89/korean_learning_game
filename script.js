@@ -221,7 +221,6 @@ function createCards() {
     if (gameMode === 'hard') {
         isStudying = true;
         const studyDuration = getStudyDuration();
-    
         startCountdown(studyDuration);
     
         // Set a new timeout to flip the cards back after the study duration
@@ -337,7 +336,6 @@ function resetGame() {
 
 
 function startCountdown(duration) {
-    
     Swal.fire({
         title: 'Get Ready!',
         text: 'Click OK to start the countdown.',
@@ -348,11 +346,12 @@ function startCountdown(duration) {
         allowOutsideClick: false,
     }).then(() => {
         // Start the countdown after the user clicks OK
-        let timeRemaining = duration;
+        let startTime = Date.now();
+        let endTime = startTime + duration * 1000;
 
         Swal.fire({
             title: 'The Countdown is On!',
-            html: `Keep going! You still have <strong style="color: red;">${timeRemaining}</strong> seconds left before the cards will be hidden.`,
+            html: `Keep going! You have <strong style="color: red;">${(duration).toFixed(3)}</strong> seconds left before the cards will be hidden.`,
             position: 'top', // Position the popup at the top center
             toast: true, // Make it look like a non-blocking toast notification
             timer: duration * 1000,
@@ -363,32 +362,23 @@ function startCountdown(duration) {
                 Swal.showLoading(); // Show loading animation
 
                 countdownInterval = setInterval(() => {
-                    timeRemaining--;
-                    Swal.getHtmlContainer().querySelector('strong').textContent = timeRemaining;
+                    let currentTime = Date.now();
+                    let timeRemaining = (endTime - currentTime) / 1000;
 
                     if (timeRemaining < 0) {
+                        timeRemaining = 0;
                         clearInterval(countdownInterval);
                     }
-                }, 1000);
+
+                    Swal.getHtmlContainer().querySelector('strong').textContent = timeRemaining.toFixed(3);
+                }, 10); // Update every 10 milliseconds for precision
             },
             willClose: () => {
                 clearInterval(countdownInterval);
             }
-        });
-
-        // Optionally, update or show the countdown in a different part of the screen
-        const countdownElement = document.getElementById('countdown-timer');
-        countdownElement.style.display = 'block';
-        countdownInterval = setInterval(() => {
-            countdownElement.innerText = `Hang in there! ${duration--} seconds left before the cards disappear!`;
-
-            if (duration < 0) {
-                clearInterval(countdownInterval);
-                countdownElement.style.display = 'none';
-            }
-        }, 1000);
-    });
+        });     
 }
+
 
 
 
@@ -568,15 +558,9 @@ document.getElementById('start-button').addEventListener('click', () => {
     const chapter = document.getElementById('chapter').value;
     const part = document.getElementById('part').value;
 
-    // Validate the selected mode
-    if (!selectedMode || !['easy', 'hard', 'practice', 'picture'].includes(selectedMode.value)) {
-        alert('Please select a valid game mode (Easy, Hard, Practice, Picture).');
-        return;
-    }
-
-    // Validate the selected chapter
-    if (!chapter) {
-        alert('Please select a chapter.');
+    // Validate course, chapter, and part
+    if (!course || !chapter || !part) {
+        alert('Please make sure to fill in all required fields: Course, Chapter, and Part.');
         return;
     }
     
@@ -592,19 +576,6 @@ document.getElementById('start-button').addEventListener('click', () => {
     // Reset countdown and study duration
     resetCountdown();
     const studyDuration = getStudyDuration();
-
-    // Start a new countdown with the reset study duration if needed
-    if (gameMode === 'hard') {
-        startCountdown(studyDuration);
-    }
-    
-    // Update UI elements
-    document.getElementById('score').innerText = `Score: ${score}`;
-    document.getElementById('message').innerText = '';
-
-    // Show the game board and hide the practice list
-    document.querySelector('.game-board').style.display = 'block';
-    document.getElementById('practice-list').style.display = 'none';
 
     // Load the word pairs for the selected chapter
     loadWordPairsFromChapter(course, chapter, part);
