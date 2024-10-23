@@ -526,6 +526,7 @@ function stopAllSounds() {
     });
 }
 
+
 // Updated event listener for 'start-button'
 document.getElementById('start-button').addEventListener('click', () => {
     // Stop any ongoing audio playback
@@ -573,6 +574,14 @@ document.getElementById('start-button').addEventListener('click', () => {
     // Reset countdown and study duration
     resetCountdown();
     const studyDuration = getStudyDuration();
+
+    // Update UI elements
+    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('message').innerText = '';
+
+    // Show the game board and hide the practice list
+    document.querySelector('.game-board').style.display = 'block';
+    document.getElementById('practice-list').style.display = 'none';
 
     // Load the word pairs for the selected chapter
     loadWordPairsFromChapter(course, chapter, part);
