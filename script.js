@@ -337,48 +337,60 @@ function resetGame() {
 
 
 function startCountdown(duration) {
-    if (gameMode !== 'hard') return; // Only show the countdown for hard mode
-
-    let timeRemaining = duration;
-
+    
     Swal.fire({
-        title: 'The Countdown is On!',
-        html: `Keep going! You still have <strong>${timeRemaining}</strong> seconds left before the cards will be hidden.`,
-        position: 'top-end', // Position the popup at the top-right corner
+        title: 'Get Ready!',
+        text: 'Click OK to start the countdown.',
+        position: 'top', // Position the popup at the top center
         toast: true, // Make it look like a non-blocking toast notification
-        timer: duration * 1000,
-        timerProgressBar: true,
-        showConfirmButton: false, // Remove the confirmation button
+        showConfirmButton: true, // Show the confirmation button
+        confirmButtonText: 'OK',
         allowOutsideClick: false,
-        didOpen: () => {
-            Swal.showLoading(); // Show loading animation
+    }).then(() => {
+        // Start the countdown after the user clicks OK
+        let timeRemaining = duration;
 
-            countdownInterval = setInterval(() => {
-                timeRemaining--;
-                Swal.getHtmlContainer().querySelector('strong').textContent = timeRemaining;
+        Swal.fire({
+            title: 'The Countdown is On!',
+            html: `Keep going! You still have <strong style="color: red;">${timeRemaining}</strong> seconds left before the cards will be hidden.`,
+            position: 'top', // Position the popup at the top center
+            toast: true, // Make it look like a non-blocking toast notification
+            timer: duration * 1000,
+            timerProgressBar: true,
+            showConfirmButton: false, // Remove the confirmation button
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading(); // Show loading animation
 
-                if (timeRemaining < 0) {
-                    clearInterval(countdownInterval);
-                }
-            }, 1000);
-        },
-        willClose: () => {
-            clearInterval(countdownInterval);
-        }
+                countdownInterval = setInterval(() => {
+                    timeRemaining--;
+                    Swal.getHtmlContainer().querySelector('strong').textContent = timeRemaining;
+
+                    if (timeRemaining < 0) {
+                        clearInterval(countdownInterval);
+                    }
+                }, 1000);
+            },
+            willClose: () => {
+                clearInterval(countdownInterval);
+            }
+        });
+
+        // Optionally, update or show the countdown in a different part of the screen
+        const countdownElement = document.getElementById('countdown-timer');
+        countdownElement.style.display = 'block';
+        countdownInterval = setInterval(() => {
+            countdownElement.innerText = `Hang in there! ${duration--} seconds left before the cards disappear!`;
+
+            if (duration < 0) {
+                clearInterval(countdownInterval);
+                countdownElement.style.display = 'none';
+            }
+        }, 1000);
     });
-
-    // Optionally, update or show the countdown in a different part of the screen
-    const countdownElement = document.getElementById('countdown-timer');
-    countdownElement.style.display = 'block';
-    countdownInterval = setInterval(() => {
-        countdownElement.innerText = `Hang in there! ${duration--} seconds left before the cards disappear!`;
-
-        if (duration < 0) {
-            clearInterval(countdownInterval);
-            countdownElement.style.display = 'none';
-        }
-    }, 1000);
 }
+
+
 
 function startPracticeMode() {
     const practiceList = document.getElementById('practice-list');
