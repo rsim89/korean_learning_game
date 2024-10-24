@@ -110,8 +110,9 @@ function resetCountdown() {
     const studyDuration = getStudyDuration();
 }
 
+
 function loadWordPairsFromChapter(course, chapter, part) {
-    const filePath = `${BASE_URL}vocab/${course}_${chapter}_${part}.xlsx`;
+    const filePath = `${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx`;
 
     fetch(filePath)
         .then(response => {
@@ -139,7 +140,11 @@ function loadWordPairsFromChapter(course, chapter, part) {
                 }
             }
 
-            shuffle(wordPairs);
+            // Shuffle only if the game mode is not 'practice' or 'picture'
+            if (gameMode !== 'practice' && gameMode !== 'picture') {
+                shuffle(wordPairs);
+            }
+
             if (gameMode === 'practice') {
                 startPracticeMode();
             } else if (gameMode === 'picture') {
@@ -153,7 +158,6 @@ function loadWordPairsFromChapter(course, chapter, part) {
             alert('Failed to load the selected chapter. Please make sure the file exists and is accessible.');
         });
 }
-
 
 
 function createCards() {
