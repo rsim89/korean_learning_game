@@ -578,11 +578,23 @@ document.getElementById('start-button').addEventListener('click', () => {
     const course = document.getElementById('course').value;
     const chapter = document.getElementById('chapter').value;
     const part = document.getElementById('part').value;
-
+    
+    // Save selected chapter, part, and mode in localStorage
+    localStorage.setItem("chapter", chapter);
+    localStorage.setItem("part", part);
+  
     // Validate course, chapter, and part
     if (!course || !chapter || !part) {
         alert('Please make sure to fill in all required fields: Course, Chapter, and Part.');
         return;
+    }
+
+    if (selectedMode && selectedMode.value === "running") {
+        // Redirect to webpage2 if "Running Game" mode is selected
+        window.location.href = "https://rsim89.github.io/game/";
+    } else {
+        // Proceed with regular game mode if another mode is selected
+        // (Add your existing start game logic here)
     }
 
     // Update the gameMode with the selected mode value
