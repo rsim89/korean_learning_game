@@ -579,9 +579,9 @@ document.getElementById('start-button').addEventListener('click', () => {
     const chapter = document.getElementById('chapter').value;
     const part = document.getElementById('part').value;
     
-    // Save selected chapter, part, and mode in localStorage
-    localStorage.setItem("chapter", chapter);
-    localStorage.setItem("part", part);
+    // Construct the file path based on selected chapter and part
+    const filePath = `${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx`;
+    localStorage.setItem("filePath", filePath); // Store the file path directly
   
     // Validate course, chapter, and part
     if (!course || !chapter || !part) {
@@ -613,6 +613,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     // Update UI elements
     document.getElementById('score').innerText = `Score: ${score}`;
     document.getElementById('message').innerText = '';
+    
 
     // Show the game board and hide the practice list
     document.querySelector('.game-board').style.display = 'block';
