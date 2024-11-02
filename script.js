@@ -591,7 +591,12 @@ document.getElementById('start-button').addEventListener('click', () => {
 
     if (selectedMode && selectedMode.value === "running") {
         // Redirect to webpage2 if "Running Game" mode is selected
-        window.location.href = "https://rsim89.github.io/game/index.html";
+        // Open webpage2 in a new window for the "Running Game" mode
+        window.open(
+            "https://rsim89.github.io/game/index.html",
+            "_blank",
+            "width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes"
+        );
     } else {
         // Proceed with regular game mode if another mode is selected
         // (Add your existing start game logic here)
