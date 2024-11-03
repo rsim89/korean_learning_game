@@ -595,7 +595,7 @@ document.getElementById('start-button').addEventListener('click', () => {
         window.open(
             "https://rsim89.github.io/korean_learning_game_running/index.html",
             "_blank",
-            "width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes"
+            "width=650,height=800,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes"
         );
     } else {
         // Proceed with regular game mode if another mode is selected
