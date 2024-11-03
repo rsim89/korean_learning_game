@@ -593,7 +593,7 @@ document.getElementById('start-button').addEventListener('click', () => {
         // Redirect to webpage2 if "Running Game" mode is selected
         // Open webpage2 in a new window for the "Running Game" mode
         window.open(
-            "https://rsim89.github.io/game/index.html",
+            "https://rsim89.github.io/korean_learning_game_running/index.html",
             "_blank",
             "width=800,height=600,menubar=no,toolbar=no,location=no,status=no,resizable=yes,scrollbars=yes"
         );
