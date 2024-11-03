@@ -646,8 +646,6 @@ recognition.lang = 'ko-KR'; // Set to Korean
 recognition.interimResults = false; // Only get final results
 recognition.maxAlternatives = 1; // Limit to the best match
 
-let score = 0;
-
 // Start Speaking Mode
 function startSpeakingMode() {
     const practiceList = document.getElementById('practice-list');
