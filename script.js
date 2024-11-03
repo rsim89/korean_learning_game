@@ -670,7 +670,6 @@ function startSpeakingMode() {
     adjustLayoutForMode(); // Adjust the layout for speaking mode
 }
 
-// Function to start the pronunciation test for a specific word
 function startPronunciationTest(targetWord) {
     recognition.start();
 
@@ -685,13 +684,17 @@ function startPronunciationTest(targetWord) {
         showConfirmButton: false,
     });
 
-    // Listen for the recognition result
     recognition.onresult = (event) => {
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
-        // Check if the spoken word matches the target word
-        if (spokenWord === targetWord) {
+        // Normalize words by removing punctuation and spaces, and converting to lowercase
+        const normalize = (text) => text.replace(/[.,? ]/g, '').toLowerCase();
+        const normalizedSpoken = normalize(spokenWord);
+        const normalizedTarget = normalize(targetWord);
+
+        // Check if normalized spoken word matches the normalized target word
+        if (normalizedSpoken === normalizedTarget) {
             score += 10; // Increase score
             Swal.fire({
                 icon: 'success',
@@ -710,7 +713,6 @@ function startPronunciationTest(targetWord) {
         }
     };
 
-    // Error handling
     recognition.onerror = (event) => {
         console.error('Speech recognition error:', event.error);
         Swal.fire({
@@ -720,6 +722,7 @@ function startPronunciationTest(targetWord) {
         });
     };
 }
+
 
 // Update score display
 function updateScore() {
