@@ -662,16 +662,26 @@ function startSpeakingMode() {
 
         const koreanWord = pair.korean;
 
-        // Display the Korean word and a button to start speaking
-        practiceItem.innerHTML = `<strong>${koreanWord}</strong> <button onclick="startPronunciationTest('${koreanWord}')">🎤 Pronounce</button>`;
+        // Display the Korean word and a button to start speaking with a hidden checkmark SVG
+        practiceItem.innerHTML = `
+            <strong>${koreanWord}</strong> 
+            <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
+            <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none; margin-left: 10px;">
+        `;
         practiceList.appendChild(practiceItem);
     });
 
     adjustLayoutForMode(); // Adjust the layout for speaking mode
 }
 
-function startPronunciationTest(targetWord) {
+function startPronunciationTest(targetWord, buttonElement) {
     recognition.start();
+
+    // Reference the check icon next to the microphone button
+    const checkIcon = buttonElement.nextElementSibling;
+
+    // Hide the check icon at the start of each test
+    checkIcon.style.display = 'none';
 
     // Create a fallback timer to show an error if no result is detected within 3000ms
     let recognitionTimeout = setTimeout(() => {
@@ -715,6 +725,10 @@ function startPronunciationTest(targetWord) {
                 confirmButtonText: 'Continue'
             });
             playFeedbackSound(true); // Play the correct feedback sound
+
+            // Show the check icon for correct pronunciation
+            checkIcon.style.display = 'block';
+            
             updateScore();
         } else {
             Swal.fire({
@@ -738,7 +752,6 @@ function startPronunciationTest(targetWord) {
         playFeedbackSound(false); // Play the incorrect feedback sound on error
     };
 }
-
 
 // Update score display
 function updateScore() {
