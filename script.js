@@ -666,7 +666,7 @@ function startSpeakingMode() {
         practiceItem.innerHTML = `
             <strong>${koreanWord}</strong> 
             <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
-            <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none; margin-left: 10px;">
+            <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none; margin-left: 10px; position: relative; right: -10px;">
         `;
         practiceList.appendChild(practiceItem);
     });
