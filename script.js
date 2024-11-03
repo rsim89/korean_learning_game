@@ -673,6 +673,17 @@ function startSpeakingMode() {
 function startPronunciationTest(targetWord) {
     recognition.start();
 
+    // Create a fallback timer to show an error if no result is detected within 3000ms
+    let recognitionTimeout = setTimeout(() => {
+        recognition.stop(); // Stop recognition to prevent further attempts
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'No sound was detected. Please try pronouncing the word again.',
+        });
+        playFeedbackSound(false); // Play the incorrect feedback sound for no detection
+    }, 3000);
+
     Swal.fire({
         title: 'Speak Now',
         text: `Pronounce: ${targetWord}`,
@@ -685,6 +696,7 @@ function startPronunciationTest(targetWord) {
     });
 
     recognition.onresult = (event) => {
+        clearTimeout(recognitionTimeout); // Clear the fallback timer if recognition succeeds
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
@@ -702,6 +714,7 @@ function startPronunciationTest(targetWord) {
                 text: `Good job! You pronounced "${targetWord}" correctly!`,
                 confirmButtonText: 'Continue'
             });
+            playFeedbackSound(true); // Play the correct feedback sound
             updateScore();
         } else {
             Swal.fire({
@@ -710,16 +723,19 @@ function startPronunciationTest(targetWord) {
                 text: `You said "${spokenWord}". The correct pronunciation is "${targetWord}".`,
                 confirmButtonText: 'Try Again'
             });
+            playFeedbackSound(false); // Play the incorrect feedback sound
         }
     };
 
     recognition.onerror = (event) => {
+        clearTimeout(recognitionTimeout); // Clear the fallback timer on error
         console.error('Speech recognition error:', event.error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'There was an error with speech recognition. Please try again.',
         });
+        playFeedbackSound(false); // Play the incorrect feedback sound on error
     };
 }
 
