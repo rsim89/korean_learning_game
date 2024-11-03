@@ -712,13 +712,15 @@ function startPronunciationTest(targetWord, buttonElement) {
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
-        // Normalize words by removing punctuation and spaces, and converting to lowercase
+        // Normalize words for comparison
         const normalize = (text) => text.replace(/[.,? ]/g, '').toLowerCase();
-        const normalizedSpoken = normalize(spokenWord);
         const normalizedTarget = normalize(targetWord);
+        const normalizedSpoken = normalize(spokenWord);
 
-        // Check if normalized spoken word matches the normalized target word
-        if (normalizedSpoken === normalizedTarget) {
+        // Check if spoken word matches the target word or any single character within it
+        const isCorrect = normalizedSpoken === normalizedTarget || normalizedTarget.includes(normalizedSpoken);
+
+        if (isCorrect) {
             score += 10; // Increase score
             Swal.fire({
                 icon: 'success',
@@ -754,6 +756,7 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false); // Play the incorrect feedback sound on error
     };
 }
+
 
 // Update score display
 function updateScore() {
