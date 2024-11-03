@@ -161,14 +161,19 @@ function loadWordPairsFromChapter(course, chapter, part) {
 
 
 function createCards() {
-    // Get the selected mode at the start of the function
     const selectedMode = document.querySelector('input[name="mode"]:checked');
     if (!selectedMode) {
         console.error('No game mode selected');
         return;
     }
-    gameMode = selectedMode.value; // Set the gameMode to the selected mode
+    gameMode = selectedMode.value;
 
+    // Check for the selected game mode
+    if (gameMode === 'speaking') {
+        startSpeakingMode(); // Start the Speaking mode
+        return;
+    }
+    
     const englishContainer = document.getElementById('english-cards');
     const koreanContainer = document.getElementById('korean-cards');
 
@@ -524,8 +529,8 @@ function adjustLayoutForMode() {
     const gameBoard = document.querySelector('.game-board');
     const practiceList = document.getElementById('practice-list');
 
-    if (gameMode === 'practice' || gameMode === 'picture') {
-        // Adjust layout for both practice and picture modes
+    if (gameMode === 'practice' || gameMode === 'picture' || gameMode === 'speaking') {
+        // Adjust layout for practice, picture, and speaking modes
         container.style.minHeight = '600px'; // Increase the minimum height
         gameBoard.style.display = 'none'; // Hide the game board
         practiceList.style.display = 'block'; // Show the practice list
@@ -633,3 +638,94 @@ document.getElementById('start-button').addEventListener('click', () => {
 document.getElementById('refresh-button').addEventListener('click', () => {
     location.reload();
 });
+
+
+// Initialize the SpeechRecognition object
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'ko-KR'; // Set to Korean
+recognition.interimResults = false; // Only get final results
+recognition.maxAlternatives = 1; // Limit to the best match
+
+let score = 0;
+
+// Start Speaking Mode
+function startSpeakingMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
+
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+
+        const koreanWord = pair.korean;
+
+        // Display the Korean word and a button to start speaking
+        practiceItem.innerHTML = `<strong>${koreanWord}</strong> <button onclick="startPronunciationTest('${koreanWord}')">🎤 Pronounce</button>`;
+        practiceList.appendChild(practiceItem);
+    });
+
+    adjustLayoutForMode(); // Adjust the layout for speaking mode
+}
+
+// Function to start the pronunciation test for a specific word
+function startPronunciationTest(targetWord) {
+    recognition.start();
+
+    Swal.fire({
+        title: 'Speak Now',
+        text: `Pronounce: ${targetWord}`,
+        allowOutsideClick: false,
+        toast: true,
+        position: 'top',
+        timer: 3000,
+        timerProgressBar: true,
+        showConfirmButton: false,
+    });
+
+    // Listen for the recognition result
+    recognition.onresult = (event) => {
+        const spokenWord = event.results[0][0].transcript.trim();
+        console.log('You said:', spokenWord);
+
+        // Check if the spoken word matches the target word
+        if (spokenWord === targetWord) {
+            score += 10; // Increase score
+            Swal.fire({
+                icon: 'success',
+                title: 'Correct!',
+                text: `Good job! You pronounced "${targetWord}" correctly!`,
+                confirmButtonText: 'Continue'
+            });
+            updateScore();
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Try Again',
+                text: `You said "${spokenWord}". The correct pronunciation is "${targetWord}".`,
+                confirmButtonText: 'Try Again'
+            });
+        }
+    };
+
+    // Error handling
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'There was an error with speech recognition. Please try again.',
+        });
+    };
+}
+
+// Update score display
+function updateScore() {
+    const scoreElement = document.getElementById('score');
+    scoreElement.innerText = `Score: ${score}`;
+    scoreElement.style.display = 'block';
+}
