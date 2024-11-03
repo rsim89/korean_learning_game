@@ -581,7 +581,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     
     // Construct the file path based on selected chapter and part
     const filePath = `${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx`;
-    localStorage.setItem("filePath", filePath); // Store the file path directly
+    sessionStorage.setItem("filePath", filePath); // Store the file path directly
   
     // Validate course, chapter, and part
     if (!course || !chapter || !part) {
