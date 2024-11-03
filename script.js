@@ -662,11 +662,13 @@ function startSpeakingMode() {
 
         const koreanWord = pair.korean;
 
-        // Display the Korean word and a button to start speaking with a hidden checkmark SVG
+        // Display the Korean word, microphone button, and hidden check icon inside a flex container
         practiceItem.innerHTML = `
             <strong>${koreanWord}</strong> 
-            <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
-            <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none; margin-left: 10px; position: relative; right: -10px;">
+            <div class="pronounce-container" style="display: inline-flex; align-items: center; gap: 10px;">
+                <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
+                <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none;">
+            </div>
         `;
         practiceList.appendChild(practiceItem);
     });
