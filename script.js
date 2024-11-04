@@ -718,41 +718,36 @@ function convertFourDigitsToKorean(num) {
     return result;
 }
 
-// Modify convertToKoreanNumber function to use numberToKorean for entire numbers
+// Convert numeric values in a word to Korean numerals if applicable
 function convertToKoreanNumber(word) {
-    for (let [num, kor] of Object.entries(numberMap)) {
-        if (word.includes(num)) {
-            word = word.replace(num, kor);
-        } else if (word.includes(kor)) {
-            word = word.replace(kor, num);
-        }
-    }
-
-    // Check if the word includes any numeric value and convert it
     const match = word.match(/\d+/); // Find numbers within the word
     if (match) {
         const numericValue = parseInt(match[0], 10);
         const koreanEquivalent = numberToKorean(numericValue);
         word = word.replace(match[0], koreanEquivalent);
     }
-
     return word;
 }
 
-// Example usage in startPronunciationTest function
+// Original function remains unchanged, but uses convertToKoreanNumber for comparison
 function startPronunciationTest(targetWord, buttonElement) {
     recognition.start();
 
+    // Reference the check icon next to the microphone button
     const checkIcon = buttonElement.nextElementSibling;
+
+    // Hide the check icon at the start of each test
     checkIcon.style.display = 'none';
+
+    // Create a fallback timer to show an error if no result is detected within 3000ms
     let recognitionTimeout = setTimeout(() => {
-        recognition.stop();
+        recognition.stop(); // Stop recognition to prevent further attempts
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'No sound was detected. Please try pronouncing the word again.',
         });
-        playFeedbackSound(false);
+        playFeedbackSound(false); // Play the incorrect feedback sound for no detection
     }, 3000);
 
     Swal.fire({
@@ -767,25 +762,31 @@ function startPronunciationTest(targetWord, buttonElement) {
     });
 
     recognition.onresult = (event) => {
-        clearTimeout(recognitionTimeout);
+        clearTimeout(recognitionTimeout); // Clear the fallback timer if recognition succeeds
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
-        const normalizedTarget = convertToKoreanNumber(targetWord.replace(/[.,? ]/g, ''));
-        const normalizedSpoken = convertToKoreanNumber(spokenWord.replace(/[.,? ]/g, ''));
+        // Normalize words for comparison, including Korean numeral conversion
+        const normalize = (text) => convertToKoreanNumber(text.replace(/[.,? ]/g, '').toLowerCase());
+        const normalizedTarget = normalize(targetWord);
+        const normalizedSpoken = normalize(spokenWord);
 
+        // Check if spoken word matches the target word or any single character within it
         const isCorrect = normalizedSpoken === normalizedTarget || normalizedTarget.includes(normalizedSpoken);
 
         if (isCorrect) {
-            score += 10;
+            score += 10; // Increase score
             Swal.fire({
                 icon: 'success',
                 title: 'Correct!',
                 text: `Good job! You pronounced "${targetWord}" correctly!`,
                 confirmButtonText: 'Continue'
             });
-            playFeedbackSound(true);
+            playFeedbackSound(true); // Play the correct feedback sound
+
+            // Show the check icon for correct pronunciation
             checkIcon.style.display = 'block';
+            
             updateScore();
         } else {
             Swal.fire({
@@ -794,22 +795,21 @@ function startPronunciationTest(targetWord, buttonElement) {
                 text: `You said "${spokenWord}". The correct pronunciation is "${targetWord}".`,
                 confirmButtonText: 'Try Again'
             });
-            playFeedbackSound(false);
+            playFeedbackSound(false); // Play the incorrect feedback sound
         }
     };
 
     recognition.onerror = (event) => {
-        clearTimeout(recognitionTimeout);
+        clearTimeout(recognitionTimeout); // Clear the fallback timer on error
         console.error('Speech recognition error:', event.error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'There was an error with speech recognition. Please try again.',
         });
-        playFeedbackSound(false);
+        playFeedbackSound(false); // Play the incorrect feedback sound on error
     };
 }
-
 
 // Update score display
 function updateScore() {
