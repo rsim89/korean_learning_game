@@ -716,73 +716,53 @@ function startSpeakingMode() {
 }
 
 
-// Korean numerals for basic units and numbers
-const units = ['', '십', '백', '천'];
-const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
-const largeUnits = ['', '만', '억', '조', '경']; // Units for ten thousand, hundred million, etc.
+// Initialize the SpeechRecognition object with optimized settings
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'ko-KR'; // Set to Korean
+recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
+recognition.continuous = true; 
+recognition.interimResults = false; 
 
-// Function to convert any number into Korean numerals
-function numberToKorean(num) {
-    if (num === 0) return '영';
-    let result = '';
-    let largeUnitIdx = 0;
+let isRecognitionActive = false; // Flag to track if recognition is active
 
-    while (num > 0) {
-        const fourDigits = num % 10000;
-        if (fourDigits > 0) {
-            result = convertFourDigitsToKorean(fourDigits) + largeUnits[largeUnitIdx] + result;
-        }
-        num = Math.floor(num / 10000);
-        largeUnitIdx++;
-    }
+// Start Speaking Mode
+function startSpeakingMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
 
-    return result;
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+
+        const koreanWord = pair.korean;
+
+        // Display the Korean word, microphone button, and hidden check icon inside a flex container
+        practiceItem.innerHTML = `
+            <strong>${koreanWord}</strong> 
+            <div class="pronounce-container" style="display: inline-flex; align-items: center; gap: 10px;">
+                <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
+                <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none;">
+            </div>
+        `;
+        practiceList.appendChild(practiceItem);
+    });
+
+    adjustLayoutForMode(); // Adjust the layout for speaking mode
 }
-
-// Helper function to convert four digits to Korean with 천, 백, 십, and units
-function convertFourDigitsToKorean(num) {
-    let result = '';
-    let unitIdx = 0;
-    while (num > 0) {
-        const digit = num % 10;
-        if (digit > 0) {
-            result = numbers[digit] + units[unitIdx] + result;
-        }
-        num = Math.floor(num / 10);
-        unitIdx++;
-    }
-    return result;
-}
-
-// Convert numeric values in a word to Korean numerals and vice versa
-function convertToKoreanNumber(word) {
-    const match = word.match(/\d+/); // Find numbers within the word
-    if (match) {
-        const numericValue = parseInt(match[0], 10);
-        const koreanEquivalent = numberToKorean(numericValue);
-        word = word.replace(match[0], koreanEquivalent);
-    }
-    return word;
-}
-
-// Handle single character units directly
-function isSingleCharacterUnitMatch(target, spoken) {
-    const singleUnits = {
-        '천': '1000',
-        '만': '10000',
-        '억': '100000000'
-    };
-
-    const targetValue = singleUnits[target] || target;
-    const spokenValue = singleUnits[spoken] || spoken;
-
-    return targetValue === spokenValue;
-}
-
 
 function startPronunciationTest(targetWord, buttonElement) {
-    // Start the recognition process
-    recognition.start();
+    if (isRecognitionActive) {
+        console.warn("Recognition already active, ignoring new start attempt.");
+        return;
+    }
+
+    isRecognitionActive = true; // Set the flag to active
+    recognition.start(); // Start the recognition process
 
     const checkIcon = buttonElement.nextElementSibling;
     checkIcon.style.display = 'none';
@@ -790,6 +770,7 @@ function startPronunciationTest(targetWord, buttonElement) {
     // Mobile-friendly timeout (increased to 5 seconds)
     let recognitionTimeout = setTimeout(() => {
         recognition.stop();
+        isRecognitionActive = false; // Reset the flag
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -812,7 +793,8 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     recognition.onresult = (event) => {
         clearTimeout(recognitionTimeout);
-        recognition.stop();  // Stop recognition after receiving a result
+        recognition.stop(); // Stop recognition after receiving a result
+        isRecognitionActive = false; // Reset the flag
 
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
@@ -856,7 +838,8 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     recognition.onerror = (event) => {
         clearTimeout(recognitionTimeout);
-        recognition.stop();  // Stop recognition in case of an error
+        recognition.stop(); // Stop recognition in case of an error
+        isRecognitionActive = false; // Reset the flag
         console.error('Speech recognition error:', event.error);
         Swal.fire({
             icon: 'error',
@@ -866,39 +849,6 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false);
     };
 }
-
-// Helper function to calculate similarity between two strings
-function calculateSimilarity(str1, str2) {
-    const longer = str1.length > str2.length ? str1 : str2;
-    const shorter = str1.length > str2.length ? str2 : str1;
-
-    if (longer.length === 0) return 1.0;
-    return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length);
-}
-
-// Edit distance algorithm to compute the similarity score
-function editDistance(str1, str2) {
-    const costs = [];
-    for (let i = 0; i <= str1.length; i++) {
-        let lastValue = i;
-        for (let j = 0; j <= str2.length; j++) {
-            if (i === 0) costs[j] = j;
-            else {
-                if (j > 0) {
-                    let newValue = costs[j - 1];
-                    if (str1.charAt(i - 1) !== str2.charAt(j - 1)) {
-                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
-                    }
-                    costs[j - 1] = lastValue;
-                    lastValue = newValue;
-                }
-            }
-        }
-        if (i > 0) costs[str2.length] = lastValue;
-    }
-    return costs[str2.length];
-}
-
 
 // Update score display
 function updateScore() {
