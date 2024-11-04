@@ -678,6 +678,44 @@ function startSpeakingMode() {
 }
 
 
+// Initialize the SpeechRecognition object with optimized settings
+const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+recognition.lang = 'ko-KR'; // Set to Korean
+recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
+recognition.continuous = true; 
+recognition.interimResults = false; 
+
+// Start Speaking Mode
+function startSpeakingMode() {
+    const practiceList = document.getElementById('practice-list');
+    practiceList.innerHTML = '';
+    practiceList.style.display = 'block';
+    document.querySelector('.game-board').style.display = 'none';
+
+    const course = document.getElementById('course').value;
+    const chapter = document.getElementById('chapter').value;
+
+    wordPairs.forEach(pair => {
+        const practiceItem = document.createElement('div');
+        practiceItem.className = 'practice-item';
+
+        const koreanWord = pair.korean;
+
+        // Display the Korean word, microphone button, and hidden check icon inside a flex container
+        practiceItem.innerHTML = `
+            <strong>${koreanWord}</strong> 
+            <div class="pronounce-container" style="display: inline-flex; align-items: center; gap: 10px;">
+                <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
+                <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none;">
+            </div>
+        `;
+        practiceList.appendChild(practiceItem);
+    });
+
+    adjustLayoutForMode(); // Adjust the layout for speaking mode
+}
+
+
 // Korean numerals for basic units and numbers
 const units = ['', '십', '백', '천'];
 const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
@@ -774,6 +812,7 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     recognition.onresult = (event) => {
         clearTimeout(recognitionTimeout);
+        recognition.stop();  // Stop recognition after receiving a result
 
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
@@ -784,7 +823,6 @@ function startPronunciationTest(targetWord, buttonElement) {
 
         let isCorrect = normalizedSpoken === normalizedTarget;
 
-        // Single-syllable repetition and similarity threshold logic
         if (!isCorrect && normalizedTarget.length === 1) {
             const repeatedPattern = new RegExp(`^(${normalizedTarget})+$`);
             isCorrect = repeatedPattern.test(normalizedSpoken);
@@ -818,6 +856,7 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     recognition.onerror = (event) => {
         clearTimeout(recognitionTimeout);
+        recognition.stop();  // Stop recognition in case of an error
         console.error('Speech recognition error:', event.error);
         Swal.fire({
             icon: 'error',
