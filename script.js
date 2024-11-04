@@ -644,7 +644,7 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = 'ko-KR'; // Set to Korean
 recognition.interimResults = false; // Only get final results
-recognition.maxAlternatives = 3; // Try to capture multiple possible interpretations
+recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
 
 // Start Speaking Mode
 function startSpeakingMode() {
@@ -740,7 +740,7 @@ function isSingleCharacterUnitMatch(target, spoken) {
     return targetValue === spokenValue;
 }
 
-// Function to start pronunciation test with exact match requirement
+
 function startPronunciationTest(targetWord, buttonElement) {
     recognition.start();
 
@@ -752,10 +752,10 @@ function startPronunciationTest(targetWord, buttonElement) {
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No sound was detected. Please try pronouncing the word again.',
+            text: 'No sound was detected. Please try pronouncing the phrase again.',
         });
         playFeedbackSound(false);
-    }, 4000); // Increased timeout to allow time for short words
+    }, 3000);
 
     Swal.fire({
         title: 'Speak Now',
@@ -763,23 +763,27 @@ function startPronunciationTest(targetWord, buttonElement) {
         allowOutsideClick: false,
         toast: true,
         position: 'top',
-        timer: 4000,
+        timer: 3000,
         timerProgressBar: true,
         showConfirmButton: false,
     });
 
     recognition.onresult = (event) => {
-        clearTimeout(recognitionTimeout); // Clear the fallback timer if recognition succeeds
+        clearTimeout(recognitionTimeout);
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
-        // Normalize words for exact matching, especially for single characters
-        const normalize = (text) => text.replace(/[.,? ]/g, '').toLowerCase();
+        const normalize = (text) => convertToKoreanNumber(text).replace(/[.,? ]/g, '').toLowerCase();
         const normalizedTarget = normalize(targetWord);
         const normalizedSpoken = normalize(spokenWord);
 
-        // Check if the spoken word matches the target exactly
-        const isCorrect = normalizedSpoken === normalizedTarget;
+        let isCorrect = normalizedSpoken === normalizedTarget;
+
+        // Allow repetitions for single-syllable words
+        if (!isCorrect && normalizedTarget.length === 1) {
+            const repeatedPattern = new RegExp(`^(${normalizedTarget})+$`);
+            isCorrect = repeatedPattern.test(normalizedSpoken);
+        }
 
         if (isCorrect) {
             score += 10;
