@@ -640,11 +640,11 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 });
 
 
-// Initialize the SpeechRecognition object
+// Initialize the SpeechRecognition object with optimized settings
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = 'ko-KR'; // Set to Korean
 recognition.interimResults = false; // Only get final results
-recognition.maxAlternatives = 1; // Limit to the best match
+recognition.maxAlternatives = 3; // Try to capture multiple possible interpretations
 
 // Start Speaking Mode
 function startSpeakingMode() {
@@ -676,6 +676,7 @@ function startSpeakingMode() {
     adjustLayoutForMode(); // Adjust the layout for speaking mode
 }
 
+
 // Korean numerals for basic units and numbers
 const units = ['', '십', '백', '천'];
 const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
@@ -684,7 +685,6 @@ const largeUnits = ['', '만', '억', '조', '경']; // Units for ten thousand, 
 // Function to convert any number into Korean numerals
 function numberToKorean(num) {
     if (num === 0) return '영';
-
     let result = '';
     let largeUnitIdx = 0;
 
@@ -704,7 +704,6 @@ function numberToKorean(num) {
 function convertFourDigitsToKorean(num) {
     let result = '';
     let unitIdx = 0;
-
     while (num > 0) {
         const digit = num % 10;
         if (digit > 0) {
@@ -713,7 +712,6 @@ function convertFourDigitsToKorean(num) {
         num = Math.floor(num / 10);
         unitIdx++;
     }
-    
     return result;
 }
 
@@ -742,24 +740,22 @@ function isSingleCharacterUnitMatch(target, spoken) {
     return targetValue === spokenValue;
 }
 
-// Function to start pronunciation test
+// Function to start pronunciation test with exact match requirement
 function startPronunciationTest(targetWord, buttonElement) {
     recognition.start();
 
-    // Reference the check icon next to the microphone button
     const checkIcon = buttonElement.nextElementSibling;
     checkIcon.style.display = 'none';
 
-    // Create a fallback timer to show an error if no result is detected within 3000ms
     let recognitionTimeout = setTimeout(() => {
-        recognition.stop(); // Stop recognition to prevent further attempts
+        recognition.stop();
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'No sound was detected. Please try pronouncing the word again.',
         });
-        playFeedbackSound(false); // Play the incorrect feedback sound for no detection
-    }, 3000);
+        playFeedbackSound(false);
+    }, 4000); // Increased timeout to allow time for short words
 
     Swal.fire({
         title: 'Speak Now',
@@ -767,7 +763,7 @@ function startPronunciationTest(targetWord, buttonElement) {
         allowOutsideClick: false,
         toast: true,
         position: 'top',
-        timer: 3000,
+        timer: 4000,
         timerProgressBar: true,
         showConfirmButton: false,
     });
@@ -777,35 +773,24 @@ function startPronunciationTest(targetWord, buttonElement) {
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
-        // Normalize words for comparison, including Korean numeral conversion
-        const normalize = (text) => {
-            const convertedText = convertToKoreanNumber(text);
-            return convertedText.replace(/[.,? ]/g, '').toLowerCase();
-        };
-
+        // Normalize words for exact matching, especially for single characters
+        const normalize = (text) => text.replace(/[.,? ]/g, '').toLowerCase();
         const normalizedTarget = normalize(targetWord);
         const normalizedSpoken = normalize(spokenWord);
 
-        // Check if either form matches directly or if it's a single-character unit match
-        const isCorrect = 
-            normalizedSpoken === normalizedTarget || 
-            isSingleCharacterUnitMatch(targetWord, spokenWord) || // for single-character units like 천, 만, 억
-            normalizedTarget.includes(normalizedSpoken) || // for single characters matching within multi-character words
-            normalizedSpoken.includes(normalizedTarget); // if the target is a single word matched within spoken response
+        // Check if the spoken word matches the target exactly
+        const isCorrect = normalizedSpoken === normalizedTarget;
 
         if (isCorrect) {
-            score += 10; // Increase score
+            score += 10;
             Swal.fire({
                 icon: 'success',
                 title: 'Correct!',
                 text: `Good job! You pronounced "${targetWord}" correctly!`,
                 confirmButtonText: 'Continue'
             });
-            playFeedbackSound(true); // Play the correct feedback sound
-
-            // Show the check icon for correct pronunciation
+            playFeedbackSound(true);
             checkIcon.style.display = 'block';
-            
             updateScore();
         } else {
             Swal.fire({
@@ -814,19 +799,19 @@ function startPronunciationTest(targetWord, buttonElement) {
                 text: `You said "${spokenWord}". The correct pronunciation is "${targetWord}".`,
                 confirmButtonText: 'Try Again'
             });
-            playFeedbackSound(false); // Play the incorrect feedback sound
+            playFeedbackSound(false);
         }
     };
 
     recognition.onerror = (event) => {
-        clearTimeout(recognitionTimeout); // Clear the fallback timer on error
+        clearTimeout(recognitionTimeout);
         console.error('Speech recognition error:', event.error);
         Swal.fire({
             icon: 'error',
             title: 'Error',
             text: 'There was an error with speech recognition. Please try again.',
         });
-        playFeedbackSound(false); // Play the incorrect feedback sound on error
+        playFeedbackSound(false);
     };
 }
 
