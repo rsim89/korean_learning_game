@@ -643,8 +643,9 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 // Initialize the SpeechRecognition object with optimized settings
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = 'ko-KR'; // Set to Korean
-recognition.interimResults = false; // Only get final results
 recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
+recognition.continuous = false; // Ensures it stops after each spoken phrase
+recognition.interimResults = true; // Allows for interim results in real-time
 
 // Start Speaking Mode
 function startSpeakingMode() {
@@ -742,20 +743,22 @@ function isSingleCharacterUnitMatch(target, spoken) {
 
 
 function startPronunciationTest(targetWord, buttonElement) {
+    // Start the recognition process
     recognition.start();
 
     const checkIcon = buttonElement.nextElementSibling;
     checkIcon.style.display = 'none';
 
+    // Mobile-friendly timeout (increased to 5 seconds)
     let recognitionTimeout = setTimeout(() => {
         recognition.stop();
         Swal.fire({
             icon: 'error',
             title: 'Error',
-            text: 'No sound was detected. Please try pronouncing the phrase again.',
+            text: 'No sound detected. Please try pronouncing the phrase again clearly and slowly.',
         });
         playFeedbackSound(false);
-    }, 3000);
+    }, 5000);
 
     Swal.fire({
         title: 'Speak Now',
@@ -763,13 +766,15 @@ function startPronunciationTest(targetWord, buttonElement) {
         allowOutsideClick: false,
         toast: true,
         position: 'top',
-        timer: 3000,
+        timer: 5000,
         timerProgressBar: true,
         showConfirmButton: false,
+        onBeforeOpen: () => Swal.showLoading() // Display loading for real-time feedback on mobile
     });
 
     recognition.onresult = (event) => {
         clearTimeout(recognitionTimeout);
+
         const spokenWord = event.results[0][0].transcript.trim();
         console.log('You said:', spokenWord);
 
@@ -779,10 +784,14 @@ function startPronunciationTest(targetWord, buttonElement) {
 
         let isCorrect = normalizedSpoken === normalizedTarget;
 
-        // Allow repetitions for single-syllable words
+        // Single-syllable repetition and similarity threshold logic
         if (!isCorrect && normalizedTarget.length === 1) {
             const repeatedPattern = new RegExp(`^(${normalizedTarget})+$`);
             isCorrect = repeatedPattern.test(normalizedSpoken);
+        } else if (!isCorrect) {
+            const similarityScore = calculateSimilarity(normalizedTarget, normalizedSpoken);
+            isCorrect = similarityScore >= 0.85;
+            console.log(`Similarity Score: ${similarityScore}`);
         }
 
         if (isCorrect) {
@@ -790,7 +799,7 @@ function startPronunciationTest(targetWord, buttonElement) {
             Swal.fire({
                 icon: 'success',
                 title: 'Correct!',
-                text: `Good job! You pronounced "${targetWord}" correctly!`,
+                text: `Great job! You pronounced "${targetWord}" correctly!`,
                 confirmButtonText: 'Continue'
             });
             playFeedbackSound(true);
@@ -817,6 +826,38 @@ function startPronunciationTest(targetWord, buttonElement) {
         });
         playFeedbackSound(false);
     };
+}
+
+// Helper function to calculate similarity between two strings
+function calculateSimilarity(str1, str2) {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+
+    if (longer.length === 0) return 1.0;
+    return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length);
+}
+
+// Edit distance algorithm to compute the similarity score
+function editDistance(str1, str2) {
+    const costs = [];
+    for (let i = 0; i <= str1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= str2.length; j++) {
+            if (i === 0) costs[j] = j;
+            else {
+                if (j > 0) {
+                    let newValue = costs[j - 1];
+                    if (str1.charAt(i - 1) !== str2.charAt(j - 1)) {
+                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                    }
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+        }
+        if (i > 0) costs[str2.length] = lastValue;
+    }
+    return costs[str2.length];
 }
 
 
