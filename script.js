@@ -644,8 +644,8 @@ document.getElementById('refresh-button').addEventListener('click', () => {
 const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
 recognition.lang = 'ko-KR'; // Set to Korean
 recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
-recognition.continuous = false; // Ensures it stops after each spoken phrase
-recognition.interimResults = true; // Allows for interim results in real-time
+recognition.continuous = true; 
+recognition.interimResults = false; 
 
 // Start Speaking Mode
 function startSpeakingMode() {
