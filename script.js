@@ -689,7 +689,6 @@ function numberToKorean(num) {
     let largeUnitIdx = 0;
 
     while (num > 0) {
-        // Extract the last four digits for each group
         const fourDigits = num % 10000;
         if (fourDigits > 0) {
             result = convertFourDigitsToKorean(fourDigits) + largeUnits[largeUnitIdx] + result;
@@ -718,7 +717,7 @@ function convertFourDigitsToKorean(num) {
     return result;
 }
 
-// Convert numeric values in a word to Korean numerals if applicable
+// Convert numeric values in a word to Korean numerals and vice versa
 function convertToKoreanNumber(word) {
     const match = word.match(/\d+/); // Find numbers within the word
     if (match) {
@@ -729,14 +728,26 @@ function convertToKoreanNumber(word) {
     return word;
 }
 
-// Original function remains unchanged, but uses convertToKoreanNumber for comparison
+// Handle single character units directly
+function isSingleCharacterUnitMatch(target, spoken) {
+    const singleUnits = {
+        '천': '1000',
+        '만': '10000',
+        '억': '100000000'
+    };
+
+    const targetValue = singleUnits[target] || target;
+    const spokenValue = singleUnits[spoken] || spoken;
+
+    return targetValue === spokenValue;
+}
+
+// Function to start pronunciation test
 function startPronunciationTest(targetWord, buttonElement) {
     recognition.start();
 
     // Reference the check icon next to the microphone button
     const checkIcon = buttonElement.nextElementSibling;
-
-    // Hide the check icon at the start of each test
     checkIcon.style.display = 'none';
 
     // Create a fallback timer to show an error if no result is detected within 3000ms
@@ -767,12 +778,20 @@ function startPronunciationTest(targetWord, buttonElement) {
         console.log('You said:', spokenWord);
 
         // Normalize words for comparison, including Korean numeral conversion
-        const normalize = (text) => convertToKoreanNumber(text.replace(/[.,? ]/g, '').toLowerCase());
+        const normalize = (text) => {
+            const convertedText = convertToKoreanNumber(text);
+            return convertedText.replace(/[.,? ]/g, '').toLowerCase();
+        };
+
         const normalizedTarget = normalize(targetWord);
         const normalizedSpoken = normalize(spokenWord);
 
-        // Check if spoken word matches the target word or any single character within it
-        const isCorrect = normalizedSpoken === normalizedTarget || normalizedTarget.includes(normalizedSpoken);
+        // Check if either form matches directly or if it's a single-character unit match
+        const isCorrect = 
+            normalizedSpoken === normalizedTarget || 
+            isSingleCharacterUnitMatch(targetWord, spokenWord) || // for single-character units like 천, 만, 억
+            normalizedTarget.includes(normalizedSpoken) || // for single characters matching within multi-character words
+            normalizedSpoken.includes(normalizedTarget); // if the target is a single word matched within spoken response
 
         if (isCorrect) {
             score += 10; // Increase score
@@ -810,6 +829,7 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false); // Play the incorrect feedback sound on error
     };
 }
+
 
 // Update score display
 function updateScore() {
