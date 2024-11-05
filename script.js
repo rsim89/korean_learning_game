@@ -783,10 +783,35 @@ function startPronunciationTest(targetWord, buttonElement) {
 
         const spokenWord = event.results[0][0].transcript.trim();
         const normalize = (text) => convertToKoreanNumber(text).replace(/[.,? ]/g, '').toLowerCase();
+
+        // Normalize target and spoken word
         const normalizedTarget = normalize(targetWord);
         const normalizedSpoken = normalize(spokenWord);
 
-        const isCorrect = normalizedSpoken === normalizedTarget;
+        // Handle numeral-to-Korean word conversion
+        const numeralToNative = {
+            "1시": "한시",
+            "2시": "두시",
+            "3시": "세시",
+            "4시": "네시",
+            "5시": "다섯시",
+            "6시": "여섯시",
+            "7시": "일곱시",
+            "8시": "여덟시",
+            "9시": "아홉시",
+            "10시": "열시",
+            "11시": "열한시",
+            "12시": "열두시"
+        };
+
+        // Add acceptable variations based on target word
+        const alternativeForm1 = normalize(numeralToNative[targetWord] || targetWord);
+        const alternativeForm2 = normalize(Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord);
+
+        // Check if spoken word matches any of the target forms
+        const isCorrect = normalizedSpoken === normalizedTarget || 
+                          normalizedSpoken === alternativeForm1 || 
+                          normalizedSpoken === alternativeForm2;
 
         if (isCorrect) {
             score += 10;
@@ -822,7 +847,6 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false);
     };
 }
-
 
 // Helper function to calculate similarity between two strings
 function calculateSimilarity(str1, str2) {
