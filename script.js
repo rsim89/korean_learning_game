@@ -679,6 +679,70 @@ function startSpeakingMode() {
     adjustLayoutForMode(); // Adjust the layout for speaking mode
 }
 
+// Korean numerals for basic units and numbers
+const units = ['', '십', '백', '천'];
+const numbers = ['', '일', '이', '삼', '사', '오', '육', '칠', '팔', '구'];
+const largeUnits = ['', '만', '억', '조', '경']; // Units for ten thousand, hundred million, etc.
+
+// Function to convert any number into Korean numerals
+function numberToKorean(num) {
+    if (num === 0) return '영';
+    let result = '';
+    let largeUnitIdx = 0;
+
+    while (num > 0) {
+        const fourDigits = num % 10000;
+        if (fourDigits > 0) {
+            result = convertFourDigitsToKorean(fourDigits) + largeUnits[largeUnitIdx] + result;
+        }
+        num = Math.floor(num / 10000);
+        largeUnitIdx++;
+    }
+
+    return result;
+}
+
+// Helper function to convert four digits to Korean with 천, 백, 십, and units
+function convertFourDigitsToKorean(num) {
+    let result = '';
+    let unitIdx = 0;
+    while (num > 0) {
+        const digit = num % 10;
+        if (digit > 0) {
+            result = numbers[digit] + units[unitIdx] + result;
+        }
+        num = Math.floor(num / 10);
+        unitIdx++;
+    }
+    return result;
+}
+
+// Convert numeric values in a word to Korean numerals and vice versa
+function convertToKoreanNumber(word) {
+    const match = word.match(/\d+/); // Find numbers within the word
+    if (match) {
+        const numericValue = parseInt(match[0], 10);
+        const koreanEquivalent = numberToKorean(numericValue);
+        word = word.replace(match[0], koreanEquivalent);
+    }
+    return word;
+}
+
+// Handle single character units directly
+function isSingleCharacterUnitMatch(target, spoken) {
+    const singleUnits = {
+        '천': '1000',
+        '만': '10000',
+        '억': '100000000'
+    };
+
+    const targetValue = singleUnits[target] || target;
+    const spokenValue = singleUnits[spoken] || spoken;
+
+    return targetValue === spokenValue;
+}
+
+
 function startPronunciationTest(targetWord, buttonElement) {
     if (isRecognitionActive) {
         console.warn("Recognition already active, ignoring new start attempt.");
@@ -773,6 +837,38 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false);
     };
 }
+// Helper function to calculate similarity between two strings
+function calculateSimilarity(str1, str2) {
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+
+    if (longer.length === 0) return 1.0;
+    return (longer.length - editDistance(longer, shorter)) / parseFloat(longer.length);
+}
+
+// Edit distance algorithm to compute the similarity score
+function editDistance(str1, str2) {
+    const costs = [];
+    for (let i = 0; i <= str1.length; i++) {
+        let lastValue = i;
+        for (let j = 0; j <= str2.length; j++) {
+            if (i === 0) costs[j] = j;
+            else {
+                if (j > 0) {
+                    let newValue = costs[j - 1];
+                    if (str1.charAt(i - 1) !== str2.charAt(j - 1)) {
+                        newValue = Math.min(Math.min(newValue, lastValue), costs[j]) + 1;
+                    }
+                    costs[j - 1] = lastValue;
+                    lastValue = newValue;
+                }
+            }
+        }
+        if (i > 0) costs[str2.length] = lastValue;
+    }
+    return costs[str2.length];
+}
+
 
 // Update score display
 function updateScore() {
