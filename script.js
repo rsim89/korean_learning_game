@@ -14,7 +14,7 @@ let countdownInterval; // Store the interval ID globally
 const BASE_URL = 'https://rsim89.github.io/korean_learning_game/';
 
 function googleImageSearch(query) {
-    const googleImageSearchUrl = `https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)}`;
+    const googleImageSearchUrl = https://www.google.com/search?tbm=isch&q=${encodeURIComponent(query)};
     window.open(googleImageSearchUrl, '_blank');
 }
 
@@ -32,7 +32,7 @@ function toggleMute() {
 }
 
 function playSound(course, chapter, soundFile) {
-    const audioPath = `${BASE_URL}audiofiles/${course}/${chapter}/${soundFile}`;
+    const audioPath = ${BASE_URL}audiofiles/${course}/${chapter}/${soundFile};
     const audio = new Audio(audioPath);
     
     audio.play().catch(error => {
@@ -45,7 +45,7 @@ function playFeedbackSound(isCorrect) {
     if (isMuted) return; // Do not play sound if muted
 
     const soundFile = isCorrect ? 'correct.mp3' : 'incorrect.mp3';
-    const audioPath = `${BASE_URL}audiofiles/feedback/${soundFile}`;
+    const audioPath = ${BASE_URL}audiofiles/feedback/${soundFile};
     const audio = new Audio(audioPath);
 
     audio.play().catch(error => {
@@ -112,12 +112,12 @@ function resetCountdown() {
 
 
 function loadWordPairsFromChapter(course, chapter, part) {
-    const filePath = `${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx`;
+    const filePath = ${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx;
 
     fetch(filePath)
         .then(response => {
             if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                throw new Error(HTTP error! Status: ${response.status});
             }
             return response.arrayBuffer();
         })
@@ -271,12 +271,12 @@ function checkMatch() {
         firstCard.classList.add('matched');
         secondCard.classList.add('matched');
         document.getElementById('score').style.display = 'block'; // Show the score
-        document.getElementById('score').innerText = `Score: ${score}`;
+        document.getElementById('score').innerText = Score: ${score};
 
         Swal.fire({
             icon: 'success',
             title: 'Correct!',
-            text: `You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!`,
+            text: You are correct! 😊 The word pair '${firstWord}' and '${secondWord}' is a correct match!,
             confirmButtonText: 'OK'
         });
 
@@ -329,7 +329,7 @@ function checkMatch() {
         Swal.fire({
             icon: 'warning',
             title: 'Game Over!',
-            text: `You've reached the maximum attempts of ${maxAttempts}.`,
+            text: You've reached the maximum attempts of ${maxAttempts}.,
             confirmButtonText: 'Restart'
         }).then(() => {
             resetGame(); // Reset score, attempts, and restart the game
@@ -341,7 +341,7 @@ function checkMatch() {
 function resetGame() {
     score = 0;
     attempt = 0;
-    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('score').innerText = Score: ${score};
     document.getElementById('message').innerText = '';
     
     // Retrieve course, chapter, and part values from the DOM
@@ -358,7 +358,7 @@ function resetGame() {
 function startCountdown(duration) {
     Swal.fire({
         title: 'Get Ready!',
-        html: `The cards will be hidden after <span style="color: red;">${duration}</span> seconds.<br>Click OK to start the countdown.`,
+        html: The cards will be hidden after <span style="color: red;">${duration}</span> seconds.<br>Click OK to start the countdown.,
         position: 'top', // Position the popup at the top center
         toast: false, // Make it look like a non-blocking popup
         showConfirmButton: true, // Show the confirmation button
@@ -376,7 +376,7 @@ function startCountdown(duration) {
 
         Swal.fire({
             title: 'The Countdown is On!',
-            html: `Keep going! You have <strong style="color: red;">${timeRemaining.toFixed(3)}</strong> seconds left before the cards will be hidden.`,
+            html: Keep going! You have <strong style="color: red;">${timeRemaining.toFixed(3)}</strong> seconds left before the cards will be hidden.,
             position: 'top', // Position the popup at the top center
             toast: true, // Make it look like a non-blocking toast notification
             timer: duration * 1000,
@@ -417,7 +417,7 @@ function startPracticeMode() {
     wordPairs.forEach(pair => {
         const practiceItem = document.createElement('div');
         practiceItem.className = 'practice-item';
-        practiceItem.innerHTML = `<strong>${pair.english}</strong> <strong>${pair.korean}</strong>`;
+        practiceItem.innerHTML = <strong>${pair.english}</strong> <strong>${pair.korean}</strong>;
         practiceItem.addEventListener('click', () => {
             playSound(course, chapter, pair.soundFile);
         });
@@ -442,7 +442,7 @@ function PracticePicture() {
         // Create a container for the Korean word
         const wordColumn = document.createElement('div');
         wordColumn.className = 'word-column';
-        wordColumn.innerHTML = `<strong>${pair.korean}</strong>`;
+        wordColumn.innerHTML = <strong>${pair.korean}</strong>;
 
         // Create a container for the input elements
         const inputColumn = document.createElement('div');
@@ -455,7 +455,7 @@ function PracticePicture() {
 
         // Create an SVG icon for the "Check" action
         const checkIcon = document.createElement('img');
-        checkIcon.src = `${BASE_URL}images/check.svg`; // Make sure the path to the SVG is correct
+        checkIcon.src = ${BASE_URL}images/check.svg; // Make sure the path to the SVG is correct
         checkIcon.classList.add('check-icon');
 
         // Add click event to the check icon to verify the answer
@@ -467,14 +467,14 @@ function PracticePicture() {
                 Swal.fire({
                     icon: 'success',
                     title: 'Correct!',
-                    text: `You are correct! 😊 The word pair '${pair.korean}' and '${pair.english}' is a correct match!`,
+                    text: You are correct! 😊 The word pair '${pair.korean}' and '${pair.english}' is a correct match!,
                     confirmButtonText: 'OK'
                 });
             } else {
                 Swal.fire({
                     icon: 'error',
                     title: 'Incorrect',
-                    text: `Sorry, that's not correct. The correct answer is '${pair.english}'.`,
+                    text: Sorry, that's not correct. The correct answer is '${pair.english}'.,
                     confirmButtonText: 'Try Again'
                 });
             }
@@ -486,7 +486,7 @@ function PracticePicture() {
 
         // Create an SVG icon for the audio
         const audioIcon = document.createElement('img');
-        audioIcon.src = `${BASE_URL}images/audio.svg`; // Make sure the path is correct
+        audioIcon.src = ${BASE_URL}images/audio.svg; // Make sure the path is correct
         audioIcon.classList.add('audio-icon');
 
         // Add click event to the audio icon to play the Korean word sound
@@ -496,7 +496,7 @@ function PracticePicture() {
 
         // Create an SVG icon for the Google Image search
         const searchIcon = document.createElement('img');
-        searchIcon.src = `${BASE_URL}images/search.svg`; // Make sure the path is correct
+        searchIcon.src = ${BASE_URL}images/search.svg; // Make sure the path is correct
         searchIcon.classList.add('search-icon');
 
         // Use the global googleImageSearch function
@@ -585,7 +585,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     const part = document.getElementById('part').value;
     
     // Construct the file path based on selected chapter and part
-    const filePath = `${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx`;
+    const filePath = ${BASE_URL}audiofiles/${course}/${chapter}/${course}_${chapter}_${part}.xlsx;
     sessionStorage.setItem("filePath", filePath); // Store the file path directly
   
     // Validate course, chapter, and part
@@ -621,7 +621,7 @@ document.getElementById('start-button').addEventListener('click', () => {
     const studyDuration = getStudyDuration();
 
     // Update UI elements
-    document.getElementById('score').innerText = `Score: ${score}`;
+    document.getElementById('score').innerText = Score: ${score};
     document.getElementById('message').innerText = '';
     
 
@@ -666,13 +666,13 @@ function startSpeakingMode() {
         const koreanWord = pair.korean;
 
         // Display the Korean word, microphone button, and hidden check icon inside a flex container
-        practiceItem.innerHTML = `
+        practiceItem.innerHTML = 
             <strong>${koreanWord}</strong> 
             <div class="pronounce-container" style="display: inline-flex; align-items: center; gap: 10px;">
                 <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
                 <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none;">
             </div>
-        `;
+        ;
         practiceList.appendChild(practiceItem);
     });
 
@@ -767,7 +767,7 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     Swal.fire({
         title: 'Speak Now',
-        text: `Pronounce: ${targetWord}`,
+        text: Pronounce: ${targetWord},
         toast: true,
         position: 'top',
         timer: 5000,
@@ -782,49 +782,18 @@ function startPronunciationTest(targetWord, buttonElement) {
         isRecognitionActive = false;
 
         const spokenWord = event.results[0][0].transcript.trim();
-
-        // Normalize function to remove spaces and handle numeral/native forms
-        const normalize = (text) => convertToKoreanNumber(text.replace(/\s+/g, '')).toLowerCase();
-
-        // Numeral to native Korean equivalents for time expressions
-        const numeralToNative = {
-            "1시": "한시",
-            "2시": "두시",
-            "3시": "세시",
-            "4시": "네시",
-            "5시": "다섯시",
-            "6시": "여섯시",
-            "7시": "일곱시",
-            "8시": "여덟시",
-            "9시": "아홉시",
-            "10시": "열시",
-            "11시": "열한시",
-            "12시": "열두시"
-        };
-
-        // Set up correct forms by removing spaces and handling both numeral and native variations
+        const normalize = (text) => convertToKoreanNumber(text).replace(/[.,? ]/g, '').toLowerCase();
         const normalizedTarget = normalize(targetWord);
-        const alternativeForm1 = normalize(numeralToNative[targetWord] || targetWord); // Native form
-        const alternativeForm2 = normalize(Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord); // Numeral form
+        const normalizedSpoken = normalize(spokenWord);
 
-        // Compile all acceptable forms for feedback
-        const correctForms = Array.from(new Set([
-            targetWord.replace(/\s+/g, ''), // Original without spaces
-            numeralToNative[targetWord] ? numeralToNative[targetWord].replace(/\s+/g, '') : targetWord, // Native form without spaces
-            Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord // Numeral form without spaces
-        ])).map(form => `"${form}"`).join(" or ");
-
-        // Check if spoken word matches any acceptable form
-        const isCorrect = normalize(spokenWord) === normalizedTarget || 
-                          normalize(spokenWord) === alternativeForm1 || 
-                          normalize(spokenWord) === alternativeForm2;
+        const isCorrect = normalizedSpoken === normalizedTarget;
 
         if (isCorrect) {
             score += 10;
             Swal.fire({
                 icon: 'success',
                 title: 'Correct!',
-                text: `Great job! You pronounced "${targetWord}" correctly!`,
+                text: Great job! You pronounced "${targetWord}" correctly!,
                 confirmButtonText: 'Continue'
             });
             playFeedbackSound(true);
@@ -834,7 +803,7 @@ function startPronunciationTest(targetWord, buttonElement) {
             Swal.fire({
                 icon: 'error',
                 title: 'Try Again',
-                text: `You said "${spokenWord}". The correct pronunciation can be ${correctForms}.`,
+                text: You said "${spokenWord}". The correct pronunciation is "${targetWord}".,
                 confirmButtonText: 'Try Again'
             });
             playFeedbackSound(false);
@@ -891,6 +860,6 @@ function editDistance(str1, str2) {
 // Update score display
 function updateScore() {
     const scoreElement = document.getElementById('score');
-    scoreElement.innerText = `Score: ${score}`;
+    scoreElement.innerText = Score: ${score};
     scoreElement.style.display = 'block';
 }
