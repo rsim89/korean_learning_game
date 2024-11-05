@@ -647,44 +647,6 @@ recognition.maxAlternatives = 5; // Try to capture multiple possible interpretat
 recognition.continuous = true; 
 recognition.interimResults = false; 
 
-// Start Speaking Mode
-function startSpeakingMode() {
-    const practiceList = document.getElementById('practice-list');
-    practiceList.innerHTML = '';
-    practiceList.style.display = 'block';
-    document.querySelector('.game-board').style.display = 'none';
-
-    const course = document.getElementById('course').value;
-    const chapter = document.getElementById('chapter').value;
-
-    wordPairs.forEach(pair => {
-        const practiceItem = document.createElement('div');
-        practiceItem.className = 'practice-item';
-
-        const koreanWord = pair.korean;
-
-        // Display the Korean word, microphone button, and hidden check icon inside a flex container
-        practiceItem.innerHTML = `
-            <strong>${koreanWord}</strong> 
-            <div class="pronounce-container" style="display: inline-flex; align-items: center; gap: 10px;">
-                <button onclick="startPronunciationTest('${koreanWord}', this)">🎤 Pronounce</button>
-                <img src="${BASE_URL}images/check.svg" class="check-icon" style="display: none;">
-            </div>
-        `;
-        practiceList.appendChild(practiceItem);
-    });
-
-    adjustLayoutForMode(); // Adjust the layout for speaking mode
-}
-
-
-// Initialize the SpeechRecognition object with optimized settings
-const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-recognition.lang = 'ko-KR'; // Set to Korean
-recognition.maxAlternatives = 5; // Try to capture multiple possible interpretations
-recognition.continuous = true; 
-recognition.interimResults = false; 
-
 let isRecognitionActive = false; // Flag to track if recognition is active
 
 // Start Speaking Mode
