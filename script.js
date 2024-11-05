@@ -782,13 +782,11 @@ function startPronunciationTest(targetWord, buttonElement) {
         isRecognitionActive = false;
 
         const spokenWord = event.results[0][0].transcript.trim();
-        const normalize = (text) => convertToKoreanNumber(text).replace(/[.,? ]/g, '').toLowerCase();
 
-        // Normalize target and spoken word
-        const normalizedTarget = normalize(targetWord);
-        const normalizedSpoken = normalize(spokenWord);
+        // Normalize function to remove spaces and handle numeral/native forms
+        const normalize = (text) => convertToKoreanNumber(text.replace(/\s+/g, '')).toLowerCase();
 
-        // Handle numeral-to-Korean word conversion
+        // Numeral to native Korean equivalents for time expressions
         const numeralToNative = {
             "1시": "한시",
             "2시": "두시",
@@ -804,14 +802,22 @@ function startPronunciationTest(targetWord, buttonElement) {
             "12시": "열두시"
         };
 
-        // Add acceptable variations based on target word
-        const alternativeForm1 = normalize(numeralToNative[targetWord] || targetWord);
-        const alternativeForm2 = normalize(Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord);
+        // Set up correct forms by removing spaces and handling both numeral and native variations
+        const normalizedTarget = normalize(targetWord);
+        const alternativeForm1 = normalize(numeralToNative[targetWord] || targetWord); // Native form
+        const alternativeForm2 = normalize(Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord); // Numeral form
 
-        // Check if spoken word matches any of the target forms
-        const isCorrect = normalizedSpoken === normalizedTarget || 
-                          normalizedSpoken === alternativeForm1 || 
-                          normalizedSpoken === alternativeForm2;
+        // Compile all acceptable forms for feedback
+        const correctForms = Array.from(new Set([
+            targetWord.replace(/\s+/g, ''), // Original without spaces
+            numeralToNative[targetWord] ? numeralToNative[targetWord].replace(/\s+/g, '') : targetWord, // Native form without spaces
+            Object.keys(numeralToNative).find(key => numeralToNative[key] === targetWord) || targetWord // Numeral form without spaces
+        ])).map(form => `"${form}"`).join(" or ");
+
+        // Check if spoken word matches any acceptable form
+        const isCorrect = normalize(spokenWord) === normalizedTarget || 
+                          normalize(spokenWord) === alternativeForm1 || 
+                          normalize(spokenWord) === alternativeForm2;
 
         if (isCorrect) {
             score += 10;
@@ -828,7 +834,7 @@ function startPronunciationTest(targetWord, buttonElement) {
             Swal.fire({
                 icon: 'error',
                 title: 'Try Again',
-                text: `You said "${spokenWord}". The correct pronunciation is "${targetWord}".`,
+                text: `You said "${spokenWord}". The correct pronunciation can be ${correctForms}.`,
                 confirmButtonText: 'Try Again'
             });
             playFeedbackSound(false);
@@ -847,6 +853,7 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false);
     };
 }
+
 
 // Helper function to calculate similarity between two strings
 function calculateSimilarity(str1, str2) {
