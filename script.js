@@ -749,16 +749,14 @@ function startPronunciationTest(targetWord, buttonElement) {
         return;
     }
 
-    isRecognitionActive = true; // Set the flag to active
-    recognition.start(); // Start the recognition process
-
+    isRecognitionActive = true;
+    recognition.start();
     const checkIcon = buttonElement.nextElementSibling;
     checkIcon.style.display = 'none';
 
-    // Mobile-friendly timeout (increased to 5 seconds)
     let recognitionTimeout = setTimeout(() => {
         recognition.stop();
-        isRecognitionActive = false; // Reset the flag
+        isRecognitionActive = false;
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -770,37 +768,25 @@ function startPronunciationTest(targetWord, buttonElement) {
     Swal.fire({
         title: 'Speak Now',
         text: `Pronounce: ${targetWord}`,
-        allowOutsideClick: false,
         toast: true,
         position: 'top',
         timer: 5000,
         timerProgressBar: true,
         showConfirmButton: false,
-        onBeforeOpen: () => Swal.showLoading() // Display loading for real-time feedback on mobile
+        didOpen: () => Swal.showLoading()
     });
 
     recognition.onresult = (event) => {
         clearTimeout(recognitionTimeout);
-        recognition.stop(); // Stop recognition after receiving a result
-        isRecognitionActive = false; // Reset the flag
+        recognition.stop();
+        isRecognitionActive = false;
 
         const spokenWord = event.results[0][0].transcript.trim();
-        console.log('You said:', spokenWord);
-
         const normalize = (text) => convertToKoreanNumber(text).replace(/[.,? ]/g, '').toLowerCase();
         const normalizedTarget = normalize(targetWord);
         const normalizedSpoken = normalize(spokenWord);
 
-        let isCorrect = normalizedSpoken === normalizedTarget;
-
-        if (!isCorrect && normalizedTarget.length === 1) {
-            const repeatedPattern = new RegExp(`^(${normalizedTarget})+$`);
-            isCorrect = repeatedPattern.test(normalizedSpoken);
-        } else if (!isCorrect) {
-            const similarityScore = calculateSimilarity(normalizedTarget, normalizedSpoken);
-            isCorrect = similarityScore >= 0.85;
-            console.log(`Similarity Score: ${similarityScore}`);
-        }
+        const isCorrect = normalizedSpoken === normalizedTarget;
 
         if (isCorrect) {
             score += 10;
@@ -826,9 +812,8 @@ function startPronunciationTest(targetWord, buttonElement) {
 
     recognition.onerror = (event) => {
         clearTimeout(recognitionTimeout);
-        recognition.stop(); // Stop recognition in case of an error
-        isRecognitionActive = false; // Reset the flag
-        console.error('Speech recognition error:', event.error);
+        recognition.stop();
+        isRecognitionActive = false;
         Swal.fire({
             icon: 'error',
             title: 'Error',
@@ -837,6 +822,8 @@ function startPronunciationTest(targetWord, buttonElement) {
         playFeedbackSound(false);
     };
 }
+
+
 // Helper function to calculate similarity between two strings
 function calculateSimilarity(str1, str2) {
     const longer = str1.length > str2.length ? str1 : str2;
